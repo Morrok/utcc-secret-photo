@@ -15,3 +15,5 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
                       'utcc_secret_photo.settings.base')
 
 application = get_wsgi_application()
+
+print("UTCC")
