@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% comment %} <title>Click-based Authentication</title> {% endcomment %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Django Secret Photo App</title>
+    {% load static %}
+    <link href="{%static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div id="image-container">
+        <img src="static/assets/img/Jarupum.jpg" alt="Authentication Image">
+        <div id="overlay">
+            <!-- Click areas will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Array to store the clicked coordinates
+            var clickedCoordinates = [];
+
+            // Function to handle click events
+            function handleClick(event) {
+                var offset = $(this).offset();
+                var x = event.pageX - offset.left;
+                var y = event.pageY - offset.top;
+
+                // Store the clicked coordinates
+                clickedCoordinates.push({ x: x, y: y });
+
+                // Add a visual indicator for the clicked area
+                var clickArea = $('<div class="click-area"></div>').css({
+                    top: y - 5,
+                    left: x - 5,
+                    width: 10, // Adjust as needed
+                    height: 10, // Adjust as needed
+                });
+                $('#overlay').append(clickArea);
+                console.log(clickedCoordinates)
+            }
+
+            // Attach click event handler to the image container
+            $('#image-container').on('click', handleClick);
+
+            // Handle form submission
+            $('#submit-form').on('submit', function(event) {
+                event.preventDefault();
+
+                // Prepare the clicked coordinates for submission
+                var formData = { coordinates: JSON.stringify(clickedCoordinates) };
+
+                // Send an AJAX request to the Django view
+                $.ajax({
+                    url: '/authenticate/',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        // Handle the response from the server
+                        console.log(response);
+                        // Replace with your logic for successful authentication
+                    },
+                    error: function(xhr, errmsg, err) {
+                        // Handle the error response from the server
+                        console.log(xhr.status + ': ' + xhr.responseText);
+                        // Replace with your error handling logic
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+<!DOCTYPE html>
+</html>
