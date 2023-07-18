@@ -3,11 +3,12 @@
     {% comment %} <title>Click-based Authentication</title> {% endcomment %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Django Secret Photo App</title>
+    <title>Django Secret Photo App Best</title>
     {% load static %}
     <link href="{%static 'css/styles.css' %}" rel="stylesheet">
 </head>
 <body>
+    <div>Best</div>
     <div id="image-container">
         <img src="static/assets/img/Jarupum.jpg" alt="Authentication Image">
         <div id="overlay">
@@ -53,7 +54,7 @@
 
                 // Send an AJAX request to the Django view
                 $.ajax({
-                    url: '/authenticate/',
+                    url: 'secret-photo/authenticate/',
                     type: 'POST',
                     data: formData,
                     success: function(response) {
