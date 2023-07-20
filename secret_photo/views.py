@@ -7,7 +7,13 @@ from .serializers import UserSerializer
 from rest_framework.decorators import api_view
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
+def homepage(request):
+    context = {
 
+    }
+    print('test')
+    return render(
+        request, 'secret_photo/homepage.html', context)
 
 def index_tonhom(request):
     return render(request, 'index_tonhom.html')
