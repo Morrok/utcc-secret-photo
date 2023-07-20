@@ -11,7 +11,6 @@ def homepage(request):
     context = {
 
     }
-    print('test')
     return render(
         request, 'secret_photo/homepage.html', context)
 
