@@ -1,7 +1,9 @@
 #image-container {
   position: relative;
-  width: 600px; /* Adjust as needed */
-  height: 400px; /* Adjust as needed */
+  /* margin: 0 auto; */
+  /* width: 600px;  */
+  height: 400px;
+  text-align: center;
 }
 
 #image-container img {

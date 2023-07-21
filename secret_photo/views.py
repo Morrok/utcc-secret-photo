@@ -12,7 +12,7 @@ def homepage(request):
 
     }
     return render(
-        request, 'secret_photo/homepage.html', context)
+        request, 'secret_photo/homepage2.html', context)
 
 def index_tonhom(request):
     return render(request, 'index_tonhom.html')
@@ -75,4 +75,4 @@ def register(request):
         else:
             return JsonResponse({'error': 'Internal Error'}, status=500)
     
-    return render(request, 'register.html')
+    return render(request, 'secret_phto/register.html')
