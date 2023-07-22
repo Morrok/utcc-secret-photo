@@ -73,12 +73,12 @@ footer {
 }
 
 .logo-img {
-  max-width: 100%;
+  max-width: 80%;
   height: auto;
 }
 
 .logo-label {
-  font-size: 55px;
+  font-size: 45px;
 }
 
 .btn-sign-in {
@@ -115,10 +115,10 @@ footer {
     width: 30%;
   }
   .logo-img {
-    width: 100%;
+    width: 80%;
   }
   .logo-label {
-    font-size: 55px;
+    font-size: 45px;
   }
 }
 
