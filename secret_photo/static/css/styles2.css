@@ -94,6 +94,7 @@ footer {
   --bs-btn-disabled-border-color: brown;
 }
 
+
 /* Media Queries */
 /* For tablets and larger devices */
 @media screen and (min-width: 768px) {
@@ -120,6 +121,9 @@ footer {
   .logo-label {
     font-size: 55px;
   }
+  .carousel-container img {
+    height: 100%;
+  }
 }
 
 /* For mobile devices */
@@ -139,5 +143,8 @@ footer {
 
   .logo-label {
     font-size: 24px;
+  }
+  .carousel-container img {
+    height: 40%;
   }
 }
