@@ -3,7 +3,62 @@
 {% block content %}
     <div id="image-container">
         <img src="static/assets/img/rectangle-1.png" alt="">
+        <!-- <img src="static/assets/img/picture_diary.png" alt="">
+        <img src="static/assets/img/security_simplified.png" alt="">
+        <img src="static/assets/img/unlock_password.png" alt=""> -->
     </div> 
+    <div class="carousel-container">
+          <img src="static/assets/img/picture_diary.png" alt="{{ image.title }}">
+          <img src="static/assets/img/security_simplified.png" alt="{{ image.title }}">
+          <img src="static/assets/img/un_picture.png" alt="{{ image.title }}">
+          <img src="static/assets/img/Pass_setting.png" alt="{{ image.title }}">
+      </div>
+      <div id="image-container">
+        <img src="static/assets/img/unlock_password.png" alt="">
+    </div> 
+    <div class="headline-container">
+        <div class="headline">Why Cloaked Moments?</div>
+    </div>
+    <script>
+        const images = document.querySelectorAll(".carousel-container img");
+        let currentIndex = 0;
+        let timer;
 
-    
+        function showImage(index) {
+        images.forEach((img, i) => {
+            if (i === index) {
+            img.classList.add("active");
+            } else {
+            img.classList.remove("active");
+            }
+        });
+        }
+
+        function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+        }
+
+        function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+        }
+
+        function startTimer() {
+        timer = setInterval(nextImage, 10000); // Change image every 10 seconds
+        }
+
+        function stopTimer() {
+        clearInterval(timer);
+        }
+
+        const carouselContainer = document.querySelector(".carousel-container");
+
+        carouselContainer.addEventListener("mouseenter", stopTimer);
+        carouselContainer.addEventListener("mouseleave", startTimer);
+
+        showImage(currentIndex); // Show the first image initially
+        startTimer(); // Start the automatic image change on page load
+
+    </script>
 {% endblock %}
