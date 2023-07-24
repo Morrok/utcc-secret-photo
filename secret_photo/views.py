@@ -16,7 +16,10 @@ import os
 import base64
 from django.conf import settings
 from formtools.wizard.views import SessionWizardView
-from .forms import RegisterForm
+from .forms import (
+    RegisterForm,
+    number_of_click_choice
+)
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 
@@ -33,35 +36,45 @@ def homepage(request):
 @api_view(['GET', 'POST'])
 def register(request):
     if request.method == 'POST':
+        tz = pytz.timezone('Asia/Bangkok')
         image = request.FILES['image']
         data = request.POST
-
+        print(data)
+        form = RegisterForm(request.POST, request.FILES)
         username = data['username']
         email = data['email']
-        coordinates = '[x,y]'
-        tz = pytz.timezone('Asia/Bangkok')
+        coordinates = data['coordinates']
+        print(coordinates)
+
         # Get the user's profile
         try:
-            profile = UserProfile.objects.filter(
-                Q(username=username) | Q(email=email))
-            if not profile:
-                profile = UserProfile()
-                profile.username = username
-                profile.email = email
-                profile.image_data = profile.encrypt_image_data(
-                    image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
-                profile.click_coordinates_hash = \
-                    profile.get_click_coordinates_hash(coordinates)
-                profile.number_of_click = 3
-                profile.date_registered = datetime.datetime.now(tz)
-                profile.save()
-                return JsonResponse({
-                    'status': 'success',
-                    'message': 'Coordinates registered successfully!'})
+            if form.is_valid():
+                number_of_click_id = int(form.cleaned_data['number_of_click'])
+                profile = UserProfile.objects.filter(
+                    Q(username=username) | Q(email=email))
+                if not profile:
+                    profile = UserProfile()
+                    profile.username = username
+                    profile.email = email
+                    profile.image_data = profile.encrypt_image_data(
+                        image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+                    profile.click_coordinates_hash = \
+                        profile.get_click_coordinates_hash(coordinates)
+                    profile.number_of_click = \
+                        number_of_click_choice[number_of_click_id-1][1]
+                    profile.date_registered = datetime.datetime.now(tz)
+                    profile.save()
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': 'Coordinates registered successfully!'})
+                else:
+                    return JsonResponse({
+                        'status': 'Error',
+                        'message': 'Already Created.'})
             else:
                 return JsonResponse({
                     'status': 'Error',
-                    'message': 'Already Created.'})
+                    'message': 'Someting Error.'})
         # except UserProfile.DoesNotExist:
         except Exception as e:
             # Set the click coordinates
