@@ -1,0 +1,10 @@
+<!-- app/templates/done.html -->
+
+<h1>Done!</h1>
+<p>Here is the data you submitted:</p>
+<ul>
+{% for form in form_data %}
+    <li>Name: {{ form.name }}</li>
+    <li>Email: {{ form.email }}</li>
+{% endfor %}
+</ul>

@@ -9,7 +9,7 @@ env_schema = dict(
     USE_I18N=(bool, True),
     USE_L10N=(bool, True),
     USE_TZ=(bool, True),
-    # STATIC_URL=(str, 'static/'),
+    STATIC_URL=(str, 'static/'),
     LOGIN_URL=(str, 'login/'),
     # DEFAULT_AUTO_FIELD=(str, 'django.db.models.BigAutoField'),
     LOG_LEVEL=(str, 'INFO'),
@@ -19,6 +19,7 @@ env_schema = dict(
     DB_PASSWORD=(str, '1234'),
     DB_HOST=(str, 'localhost'),
     DB_PORT=(str, '5432'),
+    AUTHEN_SECRET_KEY=(str, 'RL72rg9bPzajnmwP9cB8vrKuJaIN6Iy6N99gncjD8QE='),
     # GDCC_HOST=(str, 'localhost'),
     # PROMETHEUS_HOST=(str, 'localhost'),
     # HTTP Retry
@@ -43,10 +44,9 @@ for key in env_schema:
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
-# BASE_DIR = Path(__file__).resolve().parent.parent.parent
-BASE_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+# BASE_DIR = os.path.dirname(
+#     os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_bootstrap5',
     'secret_photo'
+    # 'secret_photo.apps.SecretPhotoConfig',
 ]
 
 MIDDLEWARE = [
@@ -166,7 +167,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-# STATIC_URL = os.path.join(BASE_DIR, "static/")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -1,41 +1,163 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/css/bootstrap.min.css">
-    <title>User Registration</title>
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h2 class="mb-4">User Registration</h2>
-                <form action="{% url 'register' %}" method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password2" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="password2" name="password2" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Register</button>
-                </form>
-            </div>
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="POST" id="register-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div id="image-container">
+        <img id="imagePreview" />
+        <div id="overlay">
+            <!-- Click areas will be dynamically added here -->
         </div>
     </div>
-    <!-- Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px;" id="btn_register">สั่งจอง</button>
+    {% comment %} <input type="submit" value="Submit" /> {% endcomment %}
+</form>
+<div id="loader">
+
+</div>
+<script>
+    const inputFile = document.querySelector('#id_image');  // id_image is the id Django assigns to the image input field
+    if( inputFile != undefined){
+        inputFile.addEventListener('change', function() {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('imagePreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    }
+</script>
+
+{% comment %} <td style="text-align:center;"><img src="data:image/jpeg;base64,{{ img_front }}" alt="Image" style="max-width:600px;width:100%;max-height:900px;height:100%;"></td> {% endcomment %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Array to store the clicked coordinates
+        var clickedCoordinates = [];
+
+        // Function to handle click events
+        function handleClick(event) {
+            var offset = $(this).offset();
+            var x = event.pageX - offset.left;
+            var y = event.pageY - offset.top;
+
+            // Store the clicked coordinates
+            clickedCoordinates.push({ x: x, y: y });
+
+            // Add a visual indicator for the clicked area
+            var clickArea = $('<div class="click-area"></div>').css({
+                top: y - 5,
+                left: x - 5,
+                width: 10, // Adjust as needed
+                height: 10, // Adjust as needed
+            });
+            $('#overlay').append(clickArea);
+            console.log(clickedCoordinates)
+        }
+
+        // Attach click event handler to the image container
+        $('#image-container').on('click', handleClick);
+
+        // Handle form submission
+        $('#submit-form').on('submit', function(event) {
+            event.preventDefault();
+
+            // Prepare the clicked coordinates for submission
+            var formData = { coordinates: JSON.stringify(clickedCoordinates) };
+
+            // Send an AJAX request to the Django view
+            $.ajax({
+                url: 'secret-photo/authenticate/',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    // Handle the response from the server
+                    console.log(response);
+                    // Replace with your logic for successful authentication
+                },
+                error: function(xhr, errmsg, err) {
+                    // Handle the error response from the server
+                    console.log(xhr.status + ': ' + xhr.responseText);
+                    // Replace with your error handling logic
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#loader').hide();
+        $.ajaxSetup({
+          headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        });
+
+        $("#btn_register" ).click(function(event) {
+            if (!document.querySelector('form').checkValidity()) {
+              event.preventDefault();
+              Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ถูกต้อง',
+                text: 'กรุณาระบุข้อมูลให้ครบถ้วนและลงทะเบียนอีกครั้ง',
+                showCancelButton: true,
+                showConfirmButton: false,
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'ปิด'
+              })
+              return;
+            }
+
+            Swal.fire({
+                icon: 'question',
+                title: 'ยืนยันการลงทะเบียน',
+                text: 'ท่านยืนยันที่จะลงทะเบียนหรือไม่',
+                showCancelButton: true,
+                showConfirmButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'ปิด',
+                confirmButtonText: 'ยืนยัน',
+            }).then((result) => {
+                    if (result.isConfirmed) {
+                        confirmOrder();
+                    }
+                }) 
+
+        });
+        
+        function confirmOrder(){
+            var formData = new FormData($("#register-form")[0]);
+            $('#loader').show();
+            $.ajax({
+            url: '{% url "secret_photo:register" %}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response)
+                $('#loader').hide();
+                //var host = response.gdcc_host
+                //var orderId = response.order_id
+                //window.location.href = host+'/suite_reserve/'+orderId+'/detail';
+            },
+            error: function(xhr, status, error) {
+                var json = JSON.parse(xhr.responseText);
+                $('#loader').hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'เกิดข้อผิดพลาด กรุณาติดต่อเจ้าหน้าที่',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'ปิด'
+                })
+                }
+            }); 
+        }
+    });
+</script>
+{% endblock %}
