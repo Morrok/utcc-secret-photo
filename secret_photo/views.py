@@ -1,11 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
 # from django.contrib.auth import authenticate, login
-from .models import User
-from .serializers import UserSerializer
 from rest_framework.decorators import api_view
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from .models import CookieConsent
 
 def homepage(request):
     context = {
@@ -25,6 +23,31 @@ def index_best(request):
 
 def authen_function(request):
     return render(request, 'index_best.html')
+
+
+def cookie_popup(request):
+    if request.user.is_authenticated:
+        try:
+            consent = CookieConsent.objects.get(user=request.user)
+        except CookieConsent.DoesNotExist:
+            consent = None
+    else:
+        consent = None
+
+    return render(request, 'cookie_popup.html', {'consent': consent})
+
+def give_consent(request):
+    if request.user.is_authenticated:
+        try:
+            consent = CookieConsent.objects.get(user=request.user)
+            consent.consent_given = True
+            consent.save()
+        except CookieConsent.DoesNotExist:
+            CookieConsent.objects.create(user=request.user, consent_given=True)
+
+    return HttpResponse("Consent given successfully.")
+
+
 
 
 # def register_get(request):
