@@ -1,0 +1,47 @@
+{% if not consent %}
+<div class="cookie-popup" id="cookiePopup">
+    <p>This website uses cookies to provide you with a better user experience. By clicking "Allow," you consent to our use of cookies.</p>
+    <form id="allowForm">
+        {% csrf_token %}
+        <button type="submit" id="allowButton">Allow</button>
+    </form>
+</div>
+{% endif %}
+
+<script>
+// JavaScript to handle closing the cookie popup
+const allowForm = document.getElementById('allowForm');
+const cookiePopup = document.getElementById('cookiePopup');
+
+allowForm.addEventListener('submit', (event) => {
+  event.preventDefault(); // Prevent the form submission
+
+  // Hide the cookie pop-up
+  cookiePopup.style.display = 'none';
+
+  // Send an AJAX request to update the user's consent status in the backend
+  fetch("{% url 'secret_photo:give_consent' %}", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+  });
+});
+
+// Helper function to get CSRF token for AJAX request
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>

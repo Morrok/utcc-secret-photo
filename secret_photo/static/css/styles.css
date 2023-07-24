@@ -64,6 +64,70 @@
   cursor: pointer; /* Show pointer cursor on hover */
 }
 
+/* static/cookie_popup/style.css */
+.cookie-popup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background-color: rgba(208, 181, 174, 0.8); /* Use rgba with alpha value for transparency */
+  text-align: center;
+}
+
+.cookie-popup form {
+  display: inline;
+}
+
+.cookie-popup p {
+  margin: 0;
+}
+
+/* Styling for the "Allow" button */
+.cookie-popup button {
+  padding: 10px 20px;
+  background-color: #91705f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cookie-popup button:hover {
+  background-color: #705851;
+}
+
+/* Adjust the footer style */
+footer {
+  background-color: #f0f0f0;
+  padding: 20px 0;
+  text-align: right;
+  font-size: 25px; /* You can adjust the font size as needed */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.social-icons {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.icon-link {
+  color: #555;
+  margin-left: 10px;
+  text-decoration: none;
+  font-size: 24px; /* You can adjust the icon size as needed */
+}
+
+/* Style the icons on hover */
+.icon-link:hover {
+  color: #007bff; /* Change to your preferred color on hover */
+}
+
 #loader {
   position: fixed;
   left: 0px;

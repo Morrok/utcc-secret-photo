@@ -1,16 +1,13 @@
 from django.shortcuts import render, redirect
-# from django.contrib import messages
-# from django.contrib.auth.models import User
-# from django.contrib.auth import authenticate, login
-# from .models import User
-# from .serializers import UserProfileSerializer
 from rest_framework.decorators import api_view
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-# from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
-from .models import UserProfile
+from .models import (
+    UserProfile,
+    CookieConsent
+)
 import datetime
 import pytz
 from django.db import transaction
@@ -21,6 +18,7 @@ from django.conf import settings
 from formtools.wizard.views import SessionWizardView
 from .forms import RegisterForm
 from django.core.files.storage import FileSystemStorage
+from django.contrib import messages
 
 
 def homepage(request):
@@ -164,6 +162,30 @@ def index_tonhom(request):
 
 def index_kim(request):
     return render(request, 'index_kim.html')
+
+
+def cookie_popup(request):
+    if request.user.is_authenticated:
+        try:
+            consent = CookieConsent.objects.get(user=request.user)
+        except CookieConsent.DoesNotExist:
+            consent = None
+    else:
+        consent = None
+
+    return render(request, 'cookie_popup.html', {'consent': consent})
+
+
+def give_consent(request):
+    if request.user.is_authenticated:
+        try:
+            consent = CookieConsent.objects.get(user=request.user)
+            consent.consent_given = True
+            consent.save()
+        except CookieConsent.DoesNotExist:
+            CookieConsent.objects.create(user=request.user, consent_given=True)
+
+    return HttpResponse("Consent given successfully.")
 
 
 # def register_get(request):
