@@ -202,10 +202,11 @@
                       AlertImgSizeError();
                       $("#img_photo").val('');
                       $("#img_photo_size").text('');
+                    }else{
+                        const output = document.getElementById('imagePreview');
+                        output.src = e.target.result;
                     }
                   };
-                  const output = document.getElementById('imagePreview');
-                  output.src = e.target.result;
                   img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
