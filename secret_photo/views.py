@@ -38,16 +38,18 @@ def register(request):
     if request.method == 'POST':
         tz = pytz.timezone('Asia/Bangkok')
         image = request.FILES['img_photo']
+        print(request.FILES)
         data = request.POST
         print(data)
-        form = RegisterForm(request.POST, request.FILES)
+        form = RegisterForm(request.POST)
         username = data['username']
         email = data['email']
         coordinates = json.loads(data['coordinates'])
         print(coordinates)
         sorted_data = sorted(
             coordinates, key=lambda item: (item[0], item[1]))
-        print(sorted_data)
+        coordinates = json.dumps(sorted_data)
+        print(coordinates)
 
         # Get the user's profile
         try:
@@ -77,21 +79,7 @@ def register(request):
                 return JsonResponse({
                     'status': 'Error',
                     'message': 'Someting Error.'})
-        # except UserProfile.DoesNotExist:
         except Exception as e:
-            # Set the click coordinates
-            # profile = UserProfile()
-            # profile.set_click_coordinates(coordinates)
-            # profile.username = username
-            # profile.email = email
-            # profile.date_registered = datetime.datetime.now(tz)
-            # profile.save()
-            # data = {
-            #     'order_key': uuid.uuid4().hex,
-            #     'order_no': f'SAO_extra_{running_no}',
-            #     'running_no': running_no,
-            # }
-            # result = UserProfile.objects.create(**data)
             return JsonResponse({
                 'status': 'Error',
                 'message': e})
@@ -177,6 +165,7 @@ def index_tonhom(request):
 
 def index_kim(request):
     return render(request, 'index_kim.html')
+
 
 def cookie_popup(request):
     if request.user.is_authenticated:
