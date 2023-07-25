@@ -19,18 +19,19 @@
   height: 100%;
 }
 
-/* .overlay .click-area {
+.overlay .click-area {
   position: absolute;
   border: 2px solid red;
   background-color: rgba(255, 0, 0, 0.3); 
   cursor: pointer;
-} */
-
-.overlay .highlight-area {
-  position: absolute;
-  border: 2px solid red; /* Adjust as needed */
-  background-color: rgba(255, 0, 0, 0.3); /* Adjust as needed */
 }
+
+/* .overlay .highlight-area {
+  position: absolute;
+  border: 2px solid red; 
+  background-color: rgba(255, 0, 0, 0.3); 
+  cursor: pointer;
+} */
 
 .carousel-container {
   position: relative;

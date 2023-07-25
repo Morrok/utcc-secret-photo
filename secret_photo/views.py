@@ -46,7 +46,7 @@ def register(request):
         coordinates = json.loads(data['coordinates'])
         print(coordinates)
         sorted_data = sorted(
-            coordinates, key=lambda item: (item['x'], item['y']))
+            coordinates, key=lambda item: (item[0], item[1]))
         print(sorted_data)
 
         # Get the user's profile

@@ -40,13 +40,17 @@
           headers: { "X-CSRFToken": "{{ csrf_token }}" }
         });
 
-        var clickedCoordinates = [];
+        //var clickedCoordinates = [];
         
         // Define the size of the zones (in pixels)
         var zoneSize = 40;
         var clickedZones = [];
         // Function to handle click events
         function handleClick(event) {
+            var img = document.getElementById('imagePreview')
+            if (img.src == '') {
+                return;
+            }
             var offset = $(this).offset();
             var x = event.pageX - offset.left;
             var y = event.pageY - offset.top;
@@ -77,7 +81,7 @@
             console.log(clickedZones)
                 
             // Store the clicked coordinates
-            clickedCoordinates.push({ x: x, y: y });
+            //clickedCoordinates.push({ x: x, y: y });
 
             // Add a visual indicator for the clicked area
             //var clickArea = $('<div class="click-area"></div>').css({
@@ -134,7 +138,7 @@
         
         function confirmOrder(){
             var formData = new FormData($("#register-form")[0]);
-            formData.append('coordinates', JSON.stringify(clickedCoordinates))
+            formData.append('coordinates', JSON.stringify(clickedZones))
             $('.loader').show();
             $.ajax({
             url: '{% url "secret_photo:register" %}',
