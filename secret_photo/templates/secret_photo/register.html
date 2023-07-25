@@ -44,7 +44,6 @@
         function handleClick(event) {
             var img = document.getElementById('imagePreview')
             var click_limit = $('input[name="number_of_click"]:checked').val();
-            console.log(click_limit)
             if (img.src == '') {
                 return;
             }
@@ -139,11 +138,12 @@
               })
               return;
             }
-            if (clickedZones.length == 0){
+            var click_limit = $('input[name="number_of_click"]:checked').val();
+            if (clickedZones.length == 0 || clickedZones.length != click_limit){
                 Swal.fire({
                     icon: 'warning',
                     title: 'ข้อมูลไม่ถูกต้อง',
-                    text: 'กรุณาเลือกตำแหน่งตำแหน่งบนรูปภาพ',
+                    text: 'กรุณาเลือกตำแหน่งตำแหน่งบนรูปภาพให้ครบตามจำนวน',
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonColor: '#d33',
