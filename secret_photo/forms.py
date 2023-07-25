@@ -4,9 +4,9 @@ from django import forms
 
 
 number_of_click_choice = [
-    ('1', '3'),
-    ('2', '4'),
-    ('3', '5'),
+    ('3', '3'),
+    ('4', '4'),
+    ('5', '5'),
 ]
 
 

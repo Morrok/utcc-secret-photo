@@ -40,15 +40,36 @@
           headers: { "X-CSRFToken": "{{ csrf_token }}" }
         });
 
+    
         //var clickedCoordinates = [];
         
         // Define the size of the zones (in pixels)
         var zoneSize = 40;
         var clickedZones = [];
+         
+        $('input:radio[name="number_of_click"]').on( "change click",function(){
+            $('.overlay .click-area').remove();
+            clickedZones = [];
+        });
         // Function to handle click events
         function handleClick(event) {
             var img = document.getElementById('imagePreview')
+            var click_limit = $('input[name="number_of_click"]:checked').val();
+            console.log(click_limit)
             if (img.src == '') {
+                return;
+            }
+
+            if (click_limit == undefined){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: 'Please select number of click.',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'ปิด'
+                  })
                 return;
             }
             var offset = $(this).offset();
@@ -57,9 +78,8 @@
             
             // Calculate the zone based on the clicked coordinates
             var zoneX = Math.floor(x / zoneSize);
-            console.log(x)
             var zoneY = Math.floor(y / zoneSize);
-            console.log(y)
+
 
             // Check if this zone was already clicked
             for (var i = 0; i < clickedZones.length; i++) {
@@ -74,10 +94,23 @@
                     return;
                 }
             }
+            if(clickedZones.length == click_limit){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: 'Number of clicks out of limit.',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'ปิด'
+                  })
+                return;
+            }
 
             // Store the clicked zone
             clickedZones.push([zoneX, zoneY]);
 
+            
             console.log(clickedZones)
                 
             // Store the clicked coordinates
@@ -169,5 +202,9 @@
             }); 
         }
     });
+</script>
+<script>
+    
+   
 </script>
 {% endblock %}

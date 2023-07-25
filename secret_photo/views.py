@@ -52,7 +52,7 @@ def register(request):
         # Get the user's profile
         try:
             if form.is_valid():
-                number_of_click_id = int(form.cleaned_data['number_of_click'])
+                number_of_click = int(form.cleaned_data['number_of_click'])
                 profile = UserProfile.objects.filter(
                     Q(username=username) | Q(email=email))
                 if not profile:
@@ -63,8 +63,7 @@ def register(request):
                         image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
                     profile.click_coordinates_hash = \
                         profile.get_click_coordinates_hash(coordinates)
-                    profile.number_of_click = \
-                        number_of_click_choice[number_of_click_id-1][1]
+                    profile.number_of_click = number_of_click
                     profile.date_registered = datetime.datetime.now(tz)
                     profile.save()
                     return JsonResponse({
