@@ -4,6 +4,8 @@
 <form method="POST" id="register-form">
     {% csrf_token %}
     {{ form.as_p }}
+    <input type="file" id="img_photo" name="img_photo" accept="image/*" required>
+    <div><br></div>
     <div class="image-container" id="image-container">
         <img id="imagePreview" />
         <div class="overlay" id="overlay">
@@ -17,7 +19,7 @@
 
 </div>
 <script>
-    const inputFile = document.querySelector('#id_image');  // id_image is the id Django assigns to the image input field
+    const inputFile = document.querySelector('#img_photo');  // id_image is the id Django assigns to the image input field
     if( inputFile != undefined){
         inputFile.addEventListener('change', function() {
             const reader = new FileReader();

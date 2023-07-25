@@ -4,9 +4,10 @@ from django import forms
 
 
 number_of_click_choice = [
-    ('3', '3'),
     ('4', '4'),
-    ('5', '5'),
+    ('6', '6'),
+    ('8', '8'),
+    ('10', '10'),
 ]
 
 
@@ -18,16 +19,16 @@ class RegisterForm(forms.Form):
         choices=number_of_click_choice,
         label='Number Of Click'
     )
-    image = forms.FileField()
+    # image = forms.FileField()
 
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get('username')
         email = cleaned_data.get('email')
-        image = cleaned_data.get('image')
+        # image = cleaned_data.get('image')
         number_of_click = cleaned_data.get('number_of_click')
 
-        if not username and not email and not image and not number_of_click:
+        if not username and not email and not number_of_click:
             raise forms.ValidationError('You have to write something!')
 
 
