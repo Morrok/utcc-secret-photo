@@ -1,12 +1,10 @@
-{% if not consent %}
-<div class="cookie-popup" id="cookiePopup">
+<div class="cookie-popup" id="cookiePopup" {% if consent %}style="display: none;"{% endif %}>
     <p>This website uses cookies to provide you with a better user experience. By clicking "Allow," you consent to our use of cookies.</p>
     <form id="allowForm">
         {% csrf_token %}
         <button type="submit" id="allowButton">Allow</button>
     </form>
 </div>
-{% endif %}
 
 <script>
 // JavaScript to handle closing the cookie popup
@@ -18,6 +16,11 @@ allowForm.addEventListener('submit', (event) => {
 
   // Hide the cookie pop-up
   cookiePopup.style.display = 'none';
+
+  // Set a cookie to remember the user's consent decision for 30 days (or use local storage)
+  const now = new Date();
+  now.setDate(now.getDate() + 30);
+  document.cookie = 'cookie_consent=true; expires=' + now.toUTCString() + '; path=/';
 
   // Send an AJAX request to update the user's consent status in the backend
   fetch("{% url 'secret_photo:give_consent' %}", {
@@ -43,5 +46,10 @@ function getCookie(name) {
     }
   }
   return cookieValue;
+}
+
+// Check if the user has already given consent using cookies
+if (document.cookie.includes('cookie_consent=true')) {
+  cookiePopup.style.display = 'none'; // Hide the popup if consent is given
 }
 </script>
