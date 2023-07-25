@@ -5,6 +5,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="file" id="img_photo" name="img_photo" accept="image/*" required>
+    <span id="img_photo_size"></span>
     <div><br></div>
     <div class="image-container" id="image-container">
         <img id="imagePreview" />
@@ -170,6 +171,58 @@
                 }) 
 
         });
+
+        function bytesToMB(bytes) {
+            var megabytes = bytes / (1024 * 1024);
+            return megabytes.toFixed(2);
+        }
+        function AlertImgSizeError(){
+            Swal.fire({
+              icon: 'warning',
+              title: 'ข้อมูลไม่ถูกต้อง',
+              text: 'ไฟล์รูปที่อัปโหลดต้องมีขนาดไม่เกิน 1 MB',
+              showCancelButton: true,
+              showConfirmButton: false,
+              cancelButtonColor: '#d33',
+              cancelButtonText: 'ปิด'
+            });
+          }
+
+        $("#img_photo").on("change", function() {
+            var img_type = ['jpeg', 'jpg', 'png', 'bmp'];
+            var fileSize_MB = 0;
+            var file = this.files[0];
+              if ($.inArray($(this).val().split('.').pop().toLowerCase(), img_type) == -1) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'ข้อมูลไม่ถูกต้อง',
+                  text: 'ไฟล์รูปไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง',
+                  showCancelButton: true,
+                  showConfirmButton: false,
+                  cancelButtonColor: '#d33',
+                  cancelButtonText: 'ปิด'
+                });
+                $("#img_photo").val('');
+                $("#img_photo_size").text('');
+              }else{
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                  var img = new Image();
+                  img.onload = function() {
+                    var fileSize = file.size; 
+                    fileSize_MB = parseFloat(bytesToMB(fileSize));
+                    $("#img_photo_size").text("ขนาดไฟล์ (" + fileSize_MB + " MB)");
+                    if(fileSize_MB > 1){
+                      AlertImgSizeError();
+                      $("#img_photo").val('');
+                      $("#img_photo_size").text('');
+                    }
+                  };
+                  img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+              }   
+          })
         
         function confirmOrder(){
             var formData = new FormData($("#register-form")[0]);
@@ -204,9 +257,5 @@
             }); 
         }
     });
-</script>
-<script>
-    
-   
 </script>
 {% endblock %}

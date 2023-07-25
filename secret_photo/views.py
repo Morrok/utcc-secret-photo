@@ -37,7 +37,7 @@ def homepage(request):
 def register(request):
     if request.method == 'POST':
         tz = pytz.timezone('Asia/Bangkok')
-        image = request.FILES['image']
+        image = request.FILES['img_photo']
         data = request.POST
         print(data)
         form = RegisterForm(request.POST, request.FILES)
