@@ -178,7 +178,6 @@ def index_tonhom(request):
 def index_kim(request):
     return render(request, 'index_kim.html')
 
-
 def cookie_popup(request):
     if request.user.is_authenticated:
         try:
