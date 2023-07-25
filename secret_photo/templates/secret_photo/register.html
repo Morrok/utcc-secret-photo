@@ -139,7 +139,18 @@
               })
               return;
             }
-
+            if (clickedZones.length == 0){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ข้อมูลไม่ถูกต้อง',
+                    text: 'กรุณาเลือกตำแหน่งตำแหน่งบนรูปภาพ',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'ปิด'
+                  })
+                  return;
+            }
             Swal.fire({
                 icon: 'question',
                 title: 'ยืนยันการลงทะเบียน',
