@@ -3,6 +3,10 @@ from django.urls import path
 from secret_photo import views
 # from .views import ContactWizard
 # from django.conf import settings
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import path, include
+
 
 app_name = 'secret_photo'
 
@@ -19,5 +23,7 @@ urlpatterns = [
     # path('secret-photo/authenticate/', views.authen_function),
     # path('secret-photo/register_page', views.register, name='register')
     # path('test2', views.index2),
-    # path('api/login', views.LoginApiView.as_view(), name='login')
+    # path('api/login', views.LoginApiView.as_view(), name='login'),
+    path('picture_description/gallery/', views.gallery, name='gallery'),
+    path('picture_description/', views.picture_description_view, name='picture_description'),
 ]

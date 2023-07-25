@@ -1,6 +1,7 @@
 # app/forms.py
 
 from django import forms
+from secret_photo.models import PictureDescription
 
 
 number_of_click_choice = [
@@ -34,3 +35,9 @@ class RegisterForm(forms.Form):
 
 # class RegisterStepTwoForm(forms.Form):
 #     email = forms.EmailField()
+
+
+class PictureDescriptionForm(forms.ModelForm):
+    class Meta:
+        model = PictureDescription
+        fields = ['picture', 'description']

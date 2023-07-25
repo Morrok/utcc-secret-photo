@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 import json
 from .models import (
     UserProfile,
-    CookieConsent
+    CookieConsent,
+    PictureDescription
 )
 import datetime
 import pytz
@@ -18,7 +19,8 @@ from django.conf import settings
 from formtools.wizard.views import SessionWizardView
 from .forms import (
     RegisterForm,
-    number_of_click_choice
+    number_of_click_choice,
+    PictureDescriptionForm
 )
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
@@ -190,6 +192,31 @@ def give_consent(request):
 
     return HttpResponse("Consent given successfully.")
 
+def addphoto(request):
+    return render(request, 'secret_photo/addphoto.html')
+
+def gallery(request):
+    return render(request, 'secret_photo/gallery.html')
+
+
+def picture_description_view(request):
+    if request.method == 'POST':
+        form = PictureDescriptionForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # Add any success message or redirect to another page after successful form submission
+        return redirect('gallery/')
+    else:
+        form = PictureDescriptionForm()
+    return render(request, 'secret_photo/picture_description.html', {'form': form})  # Check the template name here
+
+
+def display_data(request):
+    # Query the database to get all objects from the PictureDescription model
+    all_data = PictureDescription.objects.all()
+    print(all_data)
+
+    return render(request, 'gallery.html', {'data': all_data})
 
 # def register_get(request):
 #     if request.method == 'GET':
