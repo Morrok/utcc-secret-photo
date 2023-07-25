@@ -43,8 +43,11 @@ def register(request):
         form = RegisterForm(request.POST, request.FILES)
         username = data['username']
         email = data['email']
-        coordinates = data['coordinates']
+        coordinates = json.loads(data['coordinates'])
         print(coordinates)
+        sorted_data = sorted(
+            coordinates, key=lambda item: (item['x'], item['y']))
+        print(sorted_data)
 
         # Get the user's profile
         try:
