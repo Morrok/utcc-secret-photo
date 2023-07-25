@@ -4,16 +4,16 @@
 <form method="POST" id="register-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <div id="image-container">
+    <div class="image-container" id="image-container">
         <img id="imagePreview" />
-        <div id="overlay">
+        <div class="overlay" id="overlay">
             <!-- Click areas will be dynamically added here -->
         </div>
     </div>
-    <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px;" id="btn_register">สั่งจอง</button>
+    <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px;" id="btn_register">Register</button>
     {% comment %} <input type="submit" value="Submit" /> {% endcomment %}
 </form>
-<div id="loader">
+<div class="loader">
 
 </div>
 <script>
@@ -32,67 +32,109 @@
 
 {% comment %} <td style="text-align:center;"><img src="data:image/jpeg;base64,{{ img_front }}" alt="Image" style="max-width:600px;width:100%;max-height:900px;height:100%;"></td> {% endcomment %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <script>
     $(document).ready(function() {
-        // Array to store the clicked coordinates
-        var clickedCoordinates = [];
+        $('.loader').hide();
+        $.ajaxSetup({
+          headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        });
 
+    
+        //var clickedCoordinates = [];
+        
+        // Define the size of the zones (in pixels)
+        var zoneSize = 40;
+        var clickedZones = [];
+         
+        $('input:radio[name="number_of_click"]').on( "change click",function(){
+            $('.overlay .click-area').remove();
+            clickedZones = [];
+        });
         // Function to handle click events
         function handleClick(event) {
+            var img = document.getElementById('imagePreview')
+            var click_limit = $('input[name="number_of_click"]:checked').val();
+            console.log(click_limit)
+            if (img.src == '') {
+                return;
+            }
+
+            if (click_limit == undefined){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: 'Please select number of click.',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'ปิด'
+                  })
+                return;
+            }
             var offset = $(this).offset();
             var x = event.pageX - offset.left;
             var y = event.pageY - offset.top;
+            
+            // Calculate the zone based on the clicked coordinates
+            var zoneX = Math.floor(x / zoneSize);
+            var zoneY = Math.floor(y / zoneSize);
 
+
+            // Check if this zone was already clicked
+            for (var i = 0; i < clickedZones.length; i++) {
+                if (clickedZones[i][0] === zoneX && clickedZones[i][1] === zoneY) {
+                    // This zone was already clicked, so remove it
+                    clickedZones.splice(i, 1);
+
+                    // Remove the visual indicator for this zone
+                    $('.overlay .click-area').eq(i).remove();
+
+                    // Exit the function
+                    return;
+                }
+            }
+            if(clickedZones.length == click_limit){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: 'Number of clicks out of limit.',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'ปิด'
+                  })
+                return;
+            }
+
+            // Store the clicked zone
+            clickedZones.push([zoneX, zoneY]);
+
+            
+            console.log(clickedZones)
+                
             // Store the clicked coordinates
-            clickedCoordinates.push({ x: x, y: y });
+            //clickedCoordinates.push({ x: x, y: y });
 
             // Add a visual indicator for the clicked area
+            //var clickArea = $('<div class="click-area"></div>').css({
+            //    top: y - 10,
+            //    left: x - 10,
+            //    width: 20, // Adjust as needed
+            //    height: 20, // Adjust as needed
+            //});
             var clickArea = $('<div class="click-area"></div>').css({
-                top: y - 5,
-                left: x - 5,
-                width: 10, // Adjust as needed
-                height: 10, // Adjust as needed
+                top: zoneY * zoneSize,
+                left: zoneX * zoneSize,
+                width: zoneSize, // Adjust as needed
+                height: zoneSize, // Adjust as needed
             });
             $('#overlay').append(clickArea);
-            console.log(clickedCoordinates)
+            
         }
 
         // Attach click event handler to the image container
         $('#image-container').on('click', handleClick);
-
-        // Handle form submission
-        $('#submit-form').on('submit', function(event) {
-            event.preventDefault();
-
-            // Prepare the clicked coordinates for submission
-            var formData = { coordinates: JSON.stringify(clickedCoordinates) };
-
-            // Send an AJAX request to the Django view
-            $.ajax({
-                url: 'secret-photo/authenticate/',
-                type: 'POST',
-                data: formData,
-                success: function(response) {
-                    // Handle the response from the server
-                    console.log(response);
-                    // Replace with your logic for successful authentication
-                },
-                error: function(xhr, errmsg, err) {
-                    // Handle the error response from the server
-                    console.log(xhr.status + ': ' + xhr.responseText);
-                    // Replace with your error handling logic
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        $('#loader').hide();
-        $.ajaxSetup({
-          headers: { "X-CSRFToken": "{{ csrf_token }}" }
-        });
 
         $("#btn_register" ).click(function(event) {
             if (!document.querySelector('form').checkValidity()) {
@@ -129,7 +171,8 @@
         
         function confirmOrder(){
             var formData = new FormData($("#register-form")[0]);
-            $('#loader').show();
+            formData.append('coordinates', JSON.stringify(clickedZones))
+            $('.loader').show();
             $.ajax({
             url: '{% url "secret_photo:register" %}',
             type: 'POST',
@@ -138,14 +181,14 @@
             contentType: false,
             success: function (response) {
                 console.log(response)
-                $('#loader').hide();
+                $('.loader').hide();
                 //var host = response.gdcc_host
                 //var orderId = response.order_id
                 //window.location.href = host+'/suite_reserve/'+orderId+'/detail';
             },
             error: function(xhr, status, error) {
                 var json = JSON.parse(xhr.responseText);
-                $('#loader').hide();
+                $('.loader').hide();
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาด',
@@ -159,5 +202,9 @@
             }); 
         }
     });
+</script>
+<script>
+    
+   
 </script>
 {% endblock %}
