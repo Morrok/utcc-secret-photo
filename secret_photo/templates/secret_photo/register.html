@@ -19,19 +19,6 @@
 <div class="loader">
 
 </div>
-<script>
-    const inputFile = document.querySelector('#img_photo');  // id_image is the id Django assigns to the image input field
-    if( inputFile != undefined){
-        inputFile.addEventListener('change', function() {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById('imagePreview');
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        });
-    }
-</script>
 
 {% comment %} <td style="text-align:center;"><img src="data:image/jpeg;base64,{{ img_front }}" alt="Image" style="max-width:600px;width:100%;max-height:900px;height:100%;"></td> {% endcomment %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -43,7 +30,6 @@
           headers: { "X-CSRFToken": "{{ csrf_token }}" }
         });
 
-    
         //var clickedCoordinates = [];
         
         // Define the size of the zones (in pixels)
@@ -218,12 +204,14 @@
                       $("#img_photo_size").text('');
                     }
                   };
+                  const output = document.getElementById('imagePreview');
+                  output.src = e.target.result;
                   img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
               }   
           })
-        
+         
         function confirmOrder(){
             var formData = new FormData($("#register-form")[0]);
             formData.append('coordinates', JSON.stringify(clickedZones))
