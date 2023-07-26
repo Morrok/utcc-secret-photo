@@ -40,19 +40,11 @@ from rest_framework.permissions import IsAuthenticated
 
 class Home(APIView):
     form_class = RegisterForm
-    template_name = 'secret_photo/homepage2.html'
+    template_name = 'secret_photo/homepage.html'
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
-
-
-# def homepage(request):
-#     context = {
-
-#     }
-#     return render(
-#         request, 'secret_photo/homepage2.html', context)
 
 
 class Register(APIView):
@@ -84,7 +76,6 @@ class RegisterCreate(Register):
         coordinates = json.dumps(sorted_data)
         print(coordinates)
 
-        # Get the user's profile
         try:
             if form.is_valid():
                 number_of_click = int(form.cleaned_data['number_of_click'])
@@ -116,77 +107,6 @@ class RegisterCreate(Register):
             return JsonResponse({
                 'status': 'Error',
                 'message': e})
-
-
-# @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def register(request):
-#     origin = request.META.get('HTTP_ORIGIN', '')
-#     print(origin)
-#     referer = request.META.get('HTTP_REFERER', '')
-#     print(referer)
-#     user_agent = request.META.get('HTTP_USER_AGENT', '')
-#     print(user_agent)
-#     tz = pytz.timezone('Asia/Bangkok')
-#     image = request.FILES['img_photo']
-#     print(request.FILES)
-#     data = request.POST
-#     print(data)
-#     form = RegisterForm(request.POST)
-#     username = data['username']
-#     email = data['email']
-#     coordinates = json.loads(data['coordinates'])
-#     print(coordinates)
-#     sorted_data = sorted(
-#         coordinates, key=lambda item: (item[0], item[1]))
-#     coordinates = json.dumps(sorted_data)
-#     print(coordinates)
-
-#     # Get the user's profile
-#     try:
-#         if form.is_valid():
-#             number_of_click = int(form.cleaned_data['number_of_click'])
-#             profile = UserProfile.objects.filter(
-#                 Q(username=username) | Q(email=email))
-#             if not profile:
-#                 profile = UserProfile()
-#                 profile.username = username
-#                 profile.email = email
-#                 profile.image_data = profile.encrypt_image_data(
-#                     image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
-#                 profile.click_coordinates_hash = \
-#                     profile.get_click_coordinates_hash(coordinates)
-#                 profile.number_of_click = number_of_click
-#                 profile.date_registered = datetime.datetime.now(tz)
-#                 profile.save()
-#                 return JsonResponse({
-#                     'status': 'success',
-#                     'message': 'Coordinates registered successfully!'})
-#             else:
-#                 return JsonResponse({
-#                     'status': 'Error',
-#                     'message': 'Already Created.'})
-#         else:
-#             return JsonResponse({
-#                 'status': 'Error',
-#                 'message': 'Someting Error.'})
-#     except Exception as e:
-#         return JsonResponse({
-#             'status': 'Error',
-#             'message': e})
-
-
-# @api_view(['GET'])
-# def register_viewpage(request):
-#     origin = request.META.get('HTTP_ORIGIN', '')
-#     print(origin)
-#     referer = request.META.get('HTTP_REFERER', '')
-#     print(referer)
-#     user_agent = request.META.get('HTTP_USER_AGENT', '')
-#     print(user_agent)
-#     form = RegisterForm()
-#     return render(request, 'secret_photo/register.html', {'form': form})
 
 
 @api_view(['GET', 'POST'])
@@ -260,14 +180,6 @@ def authenticate(request):
                              'message': 'Invalid request method!'})
 
 
-def index_tonhom(request):
-    return render(request, 'index_tonhom.html')
-
-
-def index_kim(request):
-    return render(request, 'index_kim.html')
-
-
 def cookie_popup(request):
     if request.user.is_authenticated:
         try:
@@ -319,55 +231,3 @@ def display_data(request):
     print(all_data)
 
     return render(request, 'gallery.html', {'data': all_data})
-
-# def register_get(request):
-#     if request.method == 'GET':
-#          return render(request, 'register.html')
-
-
-# def register(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         email = request.POST.get('email')
-#         password1 = request.POST.get('password1')
-#         password2 = request.POST.get('password2')
-
-#         if password1 != password2:
-#             messages.error(request, 'Passwords do not match.')
-#             return redirect('register')
-
-#         # Check if the username is already taken
-#         if User.objects.filter(username=username).exists():
-#             messages.error(request, 'Username is already taken.')
-#             return redirect('register')
-
-#         # Check if the email is already in use
-#         if User.objects.filter(email=email).exists():
-#             messages.error(request, 'Email is already in use.')
-#             return redirect('register')
-
-#         # Create the user account
-#         user = User.objects.create_user(username=username,
-# email=email, password=password1)
-#         user.save()
-#         messages.success(request,
-# 'Account created successfully. You can now log in.')
-#         return redirect('login')
-
-#     return render(request, 'register.html')
-
-
-# class RegisterWizard(SessionWizardView):
-#     file_storage = FileSystemStorage(
-#         location='files/')
-#     template_name = "secret_photo/register.html"
-#     form_list = [RegisterStepOneForm, RegisterStepTwoForm]
-
-#     def done(self, form_list, **kwargs):
-#         form_data = [form.cleaned_data for form in form_list]
-
-#         # Here you can do something with the form data
-#         # Maybe save it to the database?
-
-#         return render(self.request, 'secret_photo/done.html',
-#                       {'form_data': form_data})
