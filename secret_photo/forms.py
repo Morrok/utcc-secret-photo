@@ -13,7 +13,8 @@ number_of_click_choice = [
 
 
 class RegisterForm(forms.Form):
-    email = forms.EmailField()
+    email = forms.EmailField(widget=forms.EmailInput(
+        attrs={'placeholder': 'Enter your email'}))
     number_of_click = forms.ChoiceField(
         widget=forms.RadioSelect,
         choices=number_of_click_choice,
@@ -32,7 +33,8 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField()
+    email = forms.EmailField(widget=forms.EmailInput(
+        attrs={'placeholder': 'Enter your email'}))
 
 
 class PictureDescriptionForm(forms.ModelForm):

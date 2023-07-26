@@ -4,7 +4,10 @@
 <form method="POST" id="login-form">
     {% csrf_token %}
     {{ form.as_p }}
+    <label id="number_of_click"></label>
+    <br>
     <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_img_preview">Photo Preview</button>
+   
     <div><br></div>
     <div class="image-container" id="image-container">
         <img id="imagePreview">
@@ -209,18 +212,19 @@
         });
 
         function getImagePreview(){
-            var formData = new FormData($("#login-form")[0]);
+            var email = document.getElementById('id_email').value
             $('.loader').show();
             $.ajax({
             url: '{% url "secret_photo:img_preview" %}',
             type: 'GET',
-            data: formData,
-            processData: false,
-            contentType: false,
+            dataType: 'json',
+            data: {email: email},
             success: function (response) {
                 console.log(response)
                 var imageUrl = 'data:image/png;base64,' + response.img64;
                 $('#imagePreview').attr('src', imageUrl);
+                var textLabel = "Number of Click: "+response.number_of_click
+                $('#number_of_click').text(textLabel);
                 $('.loader').hide();
             },
             error: function(xhr, status, error) {
