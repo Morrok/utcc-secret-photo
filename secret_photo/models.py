@@ -82,5 +82,5 @@ class CookieConsent(models.Model):
     
 
 class PictureDescription(models.Model):
-    picture = models.ImageField()
+    picture = models.ImageField(upload_to='uploads/', blank=True)
     description = models.TextField()
