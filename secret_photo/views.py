@@ -26,6 +26,7 @@ from django.conf import settings
 from formtools.wizard.views import SessionWizardView
 from .forms import (
     RegisterForm,
+    LoginForm,
     number_of_click_choice,
     PictureDescriptionForm
 )
@@ -67,7 +68,6 @@ class RegisterCreate(Register):
         data = request.POST
         print(data)
         form = self.form_class(request.POST)
-        username = data['username']
         email = data['email']
         coordinates = json.loads(data['coordinates'])
         print(coordinates)
@@ -79,11 +79,9 @@ class RegisterCreate(Register):
         try:
             if form.is_valid():
                 number_of_click = int(form.cleaned_data['number_of_click'])
-                profile = UserProfile.objects.filter(
-                    Q(username=username) | Q(email=email))
+                profile = UserProfile.objects.filter(email=email)
                 if not profile:
                     profile = UserProfile()
-                    profile.username = username
                     profile.email = email
                     profile.image_data = profile.encrypt_image_data(
                         image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
@@ -109,9 +107,18 @@ class RegisterCreate(Register):
                 'message': e})
 
 
-@api_view(['GET', 'POST'])
-def login_page(request):
-    encrypted_image = UserProfile.objects.get(id=7)
+class Login(APIView):
+    form_class = LoginForm
+    template_name = 'secret_photo/login.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+
+@api_view(['GET'])
+def get_img_preview(request):
+    encrypted_image = UserProfile.objects.get(id=1)
     print(encrypted_image.image_data)
     decrypted_data = UserProfile.decrypt_image_data(
         encrypted_image.image_data,
@@ -122,9 +129,29 @@ def login_page(request):
     #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     # print(decrypted_data)
     context = {
-        'img64': base64.b64encode(decrypted_data).decode('utf-8')
+        'img64': base64.b64encode(decrypted_data).decode('utf-8'),
+        'number_of_click': 4
     }
-    return render(request, 'secret_photo/homepage.html', context)
+    # return render(request, 'secret_photo/homepage.html', context)
+    return JsonResponse(context)
+
+
+# @api_view(['GET', 'POST'])
+# def login_page(request):
+#     encrypted_image = UserProfile.objects.get(id=7)
+#     print(encrypted_image.image_data)
+#     decrypted_data = UserProfile.decrypt_image_data(
+#         encrypted_image.image_data,
+#         settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+#     # directory = os.getcwd()
+#     # image_path = f'{directory}/order_reserve/static/assets/img/suite.png'
+#     # with open(image_path, "rb") as image_file:
+#     #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+#     # print(decrypted_data)
+#     context = {
+#         'img64': base64.b64encode(decrypted_data).decode('utf-8')
+#     }
+#     return render(request, 'secret_photo/homepage.html', context)
 
 # @csrf_exempt
 # @login_required
@@ -208,8 +235,8 @@ def addphoto(request):
     return render(request, 'secret_photo/addphoto.html')
 
 
-def gallery(request):
-    return render(request, 'secret_photo/gallery.html')
+# def gallery(request):
+#     return render(request, 'secret_photo/gallery.html')
 
 
 def picture_description_view(request):
@@ -217,17 +244,14 @@ def picture_description_view(request):
         form = PictureDescriptionForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            # Add any success message or redirect to another page after successful form submission
-        return redirect('gallery/')
+            return redirect('gallery/')
     else:
         form = PictureDescriptionForm()
     # Check the template name here
     return render(request, 'secret_photo/picture_description.html', {'form': form})
 
 
-def display_data(request):
-    # Query the database to get all objects from the PictureDescription model
+def gallery(request):
     all_data = PictureDescription.objects.all()
-    print(all_data)
 
-    return render(request, 'gallery.html', {'data': all_data})
+    return render(request, 'secret_photo/gallery.html', {'data': all_data})

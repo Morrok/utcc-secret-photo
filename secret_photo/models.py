@@ -11,7 +11,6 @@ import uuid
 
 class UserProfile(models.Model):
     # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    username = models.CharField(max_length=150, unique=True)
     email = models.CharField(max_length=255, unique=True)
     # original_image = models.ImageField(upload_to='files/img/')
     image_data = models.BinaryField()
@@ -79,8 +78,8 @@ class CookieConsent(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.consent_given}'
-    
+
 
 class PictureDescription(models.Model):
-    picture = models.ImageField()
+    picture = models.ImageField(upload_to='uploads/', blank=True)
     description = models.TextField()

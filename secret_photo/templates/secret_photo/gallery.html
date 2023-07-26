@@ -1,28 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
+<!-- gallery_list.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gallery</title>
+    <title>Gallery List</title>
 </head>
 <body>
-    <h1>Gallery</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in data %}
-            <tr>
-                <td><img src="{{ item.picture.url }}" alt="Picture"></td>
-                <td>{{ item.description }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h1>Gallery List</h1>
+    <style>
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .gallery-item img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <a href="{% url 'secret_photo:upload' %}" class="btn btn-primary">Add Pictures</a>
+    <div class="gallery">
+        {% for item in data %}
+            <div class="gallery-item">
+                <img src="{{ item.picture.url }}" alt="Picture">
+                <p>{{ item.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
 
