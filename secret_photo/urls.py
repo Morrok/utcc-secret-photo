@@ -9,7 +9,9 @@ urlpatterns = [
     path('register/', views.Register.as_view(), name='register'),
     path('register/create/', views.RegisterCreate.as_view(),
          name='register_create'),
-
+    path('login/', views.Login.as_view(), name='login'),
+    path('login/img_preview/', views.get_img_preview,
+         name='img_preview'),
     path('authenticate/', views.authenticate, name='authenticate'),
     path('popup/', views.cookie_popup, name='popup'),
     path('give_consent/', views.give_consent, name='give_consent'),
