@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Upload Picture and Description</h1>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" action="{% url 'secret_photo:gallery' %}">
         {% csrf_token %}
         <!-- File input -->
         <input type="file" id="picture-input" name="picture" accept="image/*" onchange="previewImage(event)" />
@@ -22,6 +22,7 @@
         <br>
         {{ form.errors }}
         <button type="submit">Submit</button>
+        <button type="button" onclick="cancelForm()">Cancel</button>
     </form>
 
     <script>
@@ -42,6 +43,20 @@
                 imagePreview.src = '#';
                 imageContainer.style.display = 'none';
             }
+        }
+
+        function cancelForm() {
+            // Get the form element
+            const formElement = document.querySelector('form');
+    
+            // Reset the form to its default state
+            formElement.reset();
+    
+            // Clear the image preview
+            const imagePreview = document.getElementById('image-preview');
+            const imageContainer = document.getElementById('image-preview-container');
+            imagePreview.src = '#';
+            imageContainer.style.display = 'none';
         }
     </script>
 </body>

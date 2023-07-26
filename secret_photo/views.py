@@ -235,8 +235,8 @@ def addphoto(request):
     return render(request, 'secret_photo/addphoto.html')
 
 
-def gallery(request):
-    return render(request, 'secret_photo/gallery.html')
+# def gallery(request):
+#     return render(request, 'secret_photo/gallery.html')
 
 
 def picture_description_view(request):
@@ -244,17 +244,14 @@ def picture_description_view(request):
         form = PictureDescriptionForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            # Add any success message or redirect to another page after successful form submission
-        return redirect('gallery/')
+            return redirect('gallery/')
     else:
         form = PictureDescriptionForm()
     # Check the template name here
     return render(request, 'secret_photo/picture_description.html', {'form': form})
 
 
-def display_data(request):
-    # Query the database to get all objects from the PictureDescription model
+def gallery(request):
     all_data = PictureDescription.objects.all()
-    print(all_data)
 
-    return render(request, 'gallery.html', {'data': all_data})
+    return render(request, 'secret_photo/gallery.html', {'data': all_data})
