@@ -118,11 +118,12 @@ class Login(APIView):
 
 @api_view(['GET'])
 def get_img_preview(request):
-    encrypted_image = UserProfile.objects.get(id=1)
-    print(encrypted_image.image_data)
+    print(request.GET)
+    email = request.GET['email']
+    profile = UserProfile.objects.get(email=email)
     decrypted_data = UserProfile.decrypt_image_data(
-        encrypted_image.image_data,
-        settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+        profile.image_data, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+
     # directory = os.getcwd()
     # image_path = f'{directory}/order_reserve/static/assets/img/suite.png'
     # with open(image_path, "rb") as image_file:
@@ -130,7 +131,7 @@ def get_img_preview(request):
     # print(decrypted_data)
     context = {
         'img64': base64.b64encode(decrypted_data).decode('utf-8'),
-        'number_of_click': 4
+        'number_of_click': profile.number_of_click
     }
     # return render(request, 'secret_photo/homepage.html', context)
     return JsonResponse(context)
