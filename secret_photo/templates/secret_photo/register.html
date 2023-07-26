@@ -56,7 +56,7 @@
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
+                    cancelButtonText: 'Close'
                   })
                 return;
             }
@@ -90,7 +90,7 @@
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
+                    cancelButtonText: 'Close'
                   })
                 return;
             }
@@ -129,12 +129,12 @@
               event.preventDefault();
               Swal.fire({
                 icon: 'warning',
-                title: 'ข้อมูลไม่ถูกต้อง',
-                text: 'กรุณาระบุข้อมูลให้ครบถ้วนและลงทะเบียนอีกครั้ง',
+                title: 'Invalid Data',
+                text: 'Please enter the full detail and register again.',
                 showCancelButton: true,
                 showConfirmButton: false,
                 cancelButtonColor: '#d33',
-                cancelButtonText: 'ปิด'
+                cancelButtonText: 'Close'
               })
               return;
             }
@@ -142,25 +142,25 @@
             if (clickedZones.length == 0 || clickedZones.length != click_limit){
                 Swal.fire({
                     icon: 'warning',
-                    title: 'ข้อมูลไม่ถูกต้อง',
-                    text: 'กรุณาเลือกตำแหน่งตำแหน่งบนรูปภาพให้ครบตามจำนวน',
+                    title: 'Invalid Data',
+                    text: 'Please select the location of the coordinates in the picture according to the number.',
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
+                    cancelButtonText: 'Close'
                   })
                   return;
             }
             Swal.fire({
                 icon: 'question',
-                title: 'ยืนยันการลงทะเบียน',
-                text: 'ท่านยืนยันที่จะลงทะเบียนหรือไม่',
+                title: 'Confirm Registration',
+                text: 'Do you confirm to register?',
                 showCancelButton: true,
                 showConfirmButton: true,
                 cancelButtonColor: '#d33',
                 confirmButtonColor: '#3085d6',
-                cancelButtonText: 'ปิด',
-                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'Close',
+                confirmButtonText: 'Confirm',
             }).then((result) => {
                     if (result.isConfirmed) {
                         confirmOrder();
@@ -176,12 +176,12 @@
         function AlertImgSizeError(){
             Swal.fire({
               icon: 'warning',
-              title: 'ข้อมูลไม่ถูกต้อง',
-              text: 'ไฟล์รูปที่อัปโหลดต้องมีขนาดไม่เกิน 1 MB',
+              title: 'The image file size is incorrect.',
+              text: 'Uploaded image files must not exceed 1 MB in size.',
               showCancelButton: true,
               showConfirmButton: false,
               cancelButtonColor: '#d33',
-              cancelButtonText: 'ปิด'
+              cancelButtonText: 'Close'
             });
           }
 
@@ -192,12 +192,12 @@
               if ($.inArray($(this).val().split('.').pop().toLowerCase(), img_type) == -1) {
                 Swal.fire({
                   icon: 'warning',
-                  title: 'ข้อมูลไม่ถูกต้อง',
-                  text: 'ไฟล์รูปไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง',
+                  title: 'Invalid File',
+                  text: 'Size does not exceed 1 MB file attachments can be attached .jpg only.',
                   showCancelButton: true,
                   showConfirmButton: false,
                   cancelButtonColor: '#d33',
-                  cancelButtonText: 'ปิด'
+                  cancelButtonText: 'Close'
                 });
                 $("#img_photo").val('');
                 $("#img_photo_size").text('');
@@ -208,7 +208,7 @@
                   img.onload = function() {
                     var fileSize = file.size; 
                     fileSize_MB = parseFloat(bytesToMB(fileSize));
-                    $("#img_photo_size").text("ขนาดไฟล์ (" + fileSize_MB + " MB)");
+                    $("#img_photo_size").text("file size (" + fileSize_MB + " MB)");
                     if(fileSize_MB > 1){
                       AlertImgSizeError();
                       $("#img_photo").val('');
@@ -246,12 +246,12 @@
                 $('.loader').hide();
                 Swal.fire({
                     icon: 'error',
-                    title: 'เกิดข้อผิดพลาด',
-                    text: 'เกิดข้อผิดพลาด กรุณาติดต่อเจ้าหน้าที่',
+                    title: 'Error',
+                    text: 'Please contact staff',
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
+                    cancelButtonText: 'Close'
                 })
                 }
             }); 

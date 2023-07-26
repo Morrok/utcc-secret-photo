@@ -158,6 +158,8 @@ footer {
   z-index: 9999;
   background: url('/static/assets/img/loading.gif') 50% 50% no-repeat;
 }
+
+/*---------Register Page----------*/
 /* Styling for the form container */
 form {
   max-width: 800px;
@@ -169,12 +171,6 @@ form {
   border-radius: 30px;
   box-shadow: 0 2px 5px rgba(149, 110, 110, 0.1);
   backdrop-filter: blur(5px); /* Apply a blur effect */
-}
-
-input#id_username:focus {
-  background-color: #fadfd6;
-  border: 5px solid rgb(207, 177, 163);
-  box-shadow: 0 0 5px #573d37;
 }
 
 input#id_email:focus {
@@ -189,12 +185,11 @@ input#id_number_of_click:focus {
 }
 
 /* Styling for form fields */
-input[type="text"],
 input[type="email"],
 input[type="radio"] {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 5px;
+  margin-bottom: 10px;
   background-color: #fff5f1;
   border: 2px solid rgb(149, 118, 110);
   border-radius: 20px;
@@ -206,10 +201,10 @@ input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border: 2px solid #59514c;
-  border-radius: 50%;
+  border-radius: 30%;
   cursor: pointer;
   outline: none;
   vertical-align: top;
@@ -228,7 +223,7 @@ label {
   cursor: pointer;
   font-family: 'Comic Sans MS', sans-serif; 
   color: #6c5349; 
-  font-size: 20px;
+  font-size: 15px;
   vertical-align: middle;
   padding: 5px 5px;
   
@@ -244,10 +239,6 @@ input[type="email"]:hover {
   border-color: #ffba7e;
 }
 
-input[type="text"]:hover {
-  background-color: #ffdf9f;
-  border-color: #ffba7e;
-}
 
 /* Add hover effect for labels */
 label:hover {
@@ -328,15 +319,18 @@ nav a {
 
 footer {
   background-color: #c3afa3;
-  color: #fff;
+  color: #6d5f59;
   text-align: center;
   padding: 10px;
+  font-family: 'Lobster', sans-serif;
+  font-weight: bold;
 }
 
 
 .h-1 {
   color: #9d7f6d;
-  font-family: "Luckiest Guy", Helvetica;
+  font-family: 'Papyrus', sans-serif;
+  font-weight: bold;
 }
 
 .logo-img {
