@@ -229,7 +229,7 @@
             formData.append('coordinates', JSON.stringify(clickedZones))
             $('.loader').show();
             $.ajax({
-            url: '{% url "secret_photo:register" %}',
+            url: '{% url "secret_photo:register_create" %}',
             type: 'POST',
             data: formData,
             processData: false,

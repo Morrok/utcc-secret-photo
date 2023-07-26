@@ -1,5 +1,12 @@
 from django.shortcuts import render, redirect
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from django.urls import reverse
+from django.contrib import messages
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes
+)
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -24,26 +31,50 @@ from .forms import (
 )
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
-def homepage(request):
-    context = {
+class Home(APIView):
+    form_class = RegisterForm
+    template_name = 'secret_photo/homepage2.html'
 
-    }
-    return render(
-        request, 'secret_photo/homepage2.html', context)
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
 
 
-@transaction.atomic
-@api_view(['GET', 'POST'])
-def register(request):
-    if request.method == 'POST':
+# def homepage(request):
+#     context = {
+
+#     }
+#     return render(
+#         request, 'secret_photo/homepage2.html', context)
+
+
+class Register(APIView):
+    form_class = RegisterForm
+    template_name = 'secret_photo/register.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+
+class RegisterCreate(Register):
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
         tz = pytz.timezone('Asia/Bangkok')
         image = request.FILES['img_photo']
         print(request.FILES)
         data = request.POST
         print(data)
-        form = RegisterForm(request.POST)
+        form = self.form_class(request.POST)
         username = data['username']
         email = data['email']
         coordinates = json.loads(data['coordinates'])
@@ -86,8 +117,76 @@ def register(request):
                 'status': 'Error',
                 'message': e})
 
-    form = RegisterForm()
-    return render(request, 'secret_photo/register.html', {'form': form})
+
+# @api_view(['POST'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def register(request):
+#     origin = request.META.get('HTTP_ORIGIN', '')
+#     print(origin)
+#     referer = request.META.get('HTTP_REFERER', '')
+#     print(referer)
+#     user_agent = request.META.get('HTTP_USER_AGENT', '')
+#     print(user_agent)
+#     tz = pytz.timezone('Asia/Bangkok')
+#     image = request.FILES['img_photo']
+#     print(request.FILES)
+#     data = request.POST
+#     print(data)
+#     form = RegisterForm(request.POST)
+#     username = data['username']
+#     email = data['email']
+#     coordinates = json.loads(data['coordinates'])
+#     print(coordinates)
+#     sorted_data = sorted(
+#         coordinates, key=lambda item: (item[0], item[1]))
+#     coordinates = json.dumps(sorted_data)
+#     print(coordinates)
+
+#     # Get the user's profile
+#     try:
+#         if form.is_valid():
+#             number_of_click = int(form.cleaned_data['number_of_click'])
+#             profile = UserProfile.objects.filter(
+#                 Q(username=username) | Q(email=email))
+#             if not profile:
+#                 profile = UserProfile()
+#                 profile.username = username
+#                 profile.email = email
+#                 profile.image_data = profile.encrypt_image_data(
+#                     image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+#                 profile.click_coordinates_hash = \
+#                     profile.get_click_coordinates_hash(coordinates)
+#                 profile.number_of_click = number_of_click
+#                 profile.date_registered = datetime.datetime.now(tz)
+#                 profile.save()
+#                 return JsonResponse({
+#                     'status': 'success',
+#                     'message': 'Coordinates registered successfully!'})
+#             else:
+#                 return JsonResponse({
+#                     'status': 'Error',
+#                     'message': 'Already Created.'})
+#         else:
+#             return JsonResponse({
+#                 'status': 'Error',
+#                 'message': 'Someting Error.'})
+#     except Exception as e:
+#         return JsonResponse({
+#             'status': 'Error',
+#             'message': e})
+
+
+# @api_view(['GET'])
+# def register_viewpage(request):
+#     origin = request.META.get('HTTP_ORIGIN', '')
+#     print(origin)
+#     referer = request.META.get('HTTP_REFERER', '')
+#     print(referer)
+#     user_agent = request.META.get('HTTP_USER_AGENT', '')
+#     print(user_agent)
+#     form = RegisterForm()
+#     return render(request, 'secret_photo/register.html', {'form': form})
 
 
 @api_view(['GET', 'POST'])
@@ -192,8 +291,10 @@ def give_consent(request):
 
     return HttpResponse("Consent given successfully.")
 
+
 def addphoto(request):
     return render(request, 'secret_photo/addphoto.html')
+
 
 def gallery(request):
     return render(request, 'secret_photo/gallery.html')
@@ -208,7 +309,8 @@ def picture_description_view(request):
         return redirect('gallery/')
     else:
         form = PictureDescriptionForm()
-    return render(request, 'secret_photo/picture_description.html', {'form': form})  # Check the template name here
+    # Check the template name here
+    return render(request, 'secret_photo/picture_description.html', {'form': form})
 
 
 def display_data(request):
