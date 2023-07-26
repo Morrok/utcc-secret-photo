@@ -79,3 +79,8 @@ class CookieConsent(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.consent_given}'
+    
+
+class PictureDescription(models.Model):
+    picture = models.ImageField()
+    description = models.TextField()

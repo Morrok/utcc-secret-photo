@@ -1,12 +1,20 @@
 from django.shortcuts import render, redirect
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from django.urls import reverse
+from django.contrib import messages
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes
+)
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
 from .models import (
     UserProfile,
-    CookieConsent
+    CookieConsent,
+    PictureDescription
 )
 import datetime
 import pytz
@@ -18,30 +26,47 @@ from django.conf import settings
 from formtools.wizard.views import SessionWizardView
 from .forms import (
     RegisterForm,
-    number_of_click_choice
+    number_of_click_choice,
+    PictureDescriptionForm
 )
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
-def homepage(request):
-    context = {
+class Home(APIView):
+    form_class = RegisterForm
+    template_name = 'secret_photo/homepage.html'
 
-    }
-    return render(
-        request, 'secret_photo/homepage2.html', context)
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
 
 
-@transaction.atomic
-@api_view(['GET', 'POST'])
-def register(request):
-    if request.method == 'POST':
+class Register(APIView):
+    form_class = RegisterForm
+    template_name = 'secret_photo/register.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+
+class RegisterCreate(Register):
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
         tz = pytz.timezone('Asia/Bangkok')
         image = request.FILES['img_photo']
         print(request.FILES)
         data = request.POST
         print(data)
-        form = RegisterForm(request.POST)
+        form = self.form_class(request.POST)
         username = data['username']
         email = data['email']
         coordinates = json.loads(data['coordinates'])
@@ -51,7 +76,6 @@ def register(request):
         coordinates = json.dumps(sorted_data)
         print(coordinates)
 
-        # Get the user's profile
         try:
             if form.is_valid():
                 number_of_click = int(form.cleaned_data['number_of_click'])
@@ -83,9 +107,6 @@ def register(request):
             return JsonResponse({
                 'status': 'Error',
                 'message': e})
-
-    form = RegisterForm()
-    return render(request, 'secret_photo/register.html', {'form': form})
 
 
 @api_view(['GET', 'POST'])
@@ -159,14 +180,6 @@ def authenticate(request):
                              'message': 'Invalid request method!'})
 
 
-def index_tonhom(request):
-    return render(request, 'index_tonhom.html')
-
-
-def index_kim(request):
-    return render(request, 'index_kim.html')
-
-
 def cookie_popup(request):
     if request.user.is_authenticated:
         try:
@@ -191,54 +204,30 @@ def give_consent(request):
     return HttpResponse("Consent given successfully.")
 
 
-# def register_get(request):
-#     if request.method == 'GET':
-#          return render(request, 'register.html')
+def addphoto(request):
+    return render(request, 'secret_photo/addphoto.html')
 
 
-# def register(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         email = request.POST.get('email')
-#         password1 = request.POST.get('password1')
-#         password2 = request.POST.get('password2')
-
-#         if password1 != password2:
-#             messages.error(request, 'Passwords do not match.')
-#             return redirect('register')
-
-#         # Check if the username is already taken
-#         if User.objects.filter(username=username).exists():
-#             messages.error(request, 'Username is already taken.')
-#             return redirect('register')
-
-#         # Check if the email is already in use
-#         if User.objects.filter(email=email).exists():
-#             messages.error(request, 'Email is already in use.')
-#             return redirect('register')
-
-#         # Create the user account
-#         user = User.objects.create_user(username=username,
-# email=email, password=password1)
-#         user.save()
-#         messages.success(request,
-# 'Account created successfully. You can now log in.')
-#         return redirect('login')
-
-#     return render(request, 'register.html')
+def gallery(request):
+    return render(request, 'secret_photo/gallery.html')
 
 
-# class RegisterWizard(SessionWizardView):
-#     file_storage = FileSystemStorage(
-#         location='files/')
-#     template_name = "secret_photo/register.html"
-#     form_list = [RegisterStepOneForm, RegisterStepTwoForm]
+def picture_description_view(request):
+    if request.method == 'POST':
+        form = PictureDescriptionForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # Add any success message or redirect to another page after successful form submission
+        return redirect('gallery/')
+    else:
+        form = PictureDescriptionForm()
+    # Check the template name here
+    return render(request, 'secret_photo/picture_description.html', {'form': form})
 
-#     def done(self, form_list, **kwargs):
-#         form_data = [form.cleaned_data for form in form_list]
 
-#         # Here you can do something with the form data
-#         # Maybe save it to the database?
+def display_data(request):
+    # Query the database to get all objects from the PictureDescription model
+    all_data = PictureDescription.objects.all()
+    print(all_data)
 
-#         return render(self.request, 'secret_photo/done.html',
-#                       {'form_data': form_data})
+    return render(request, 'gallery.html', {'data': all_data})
