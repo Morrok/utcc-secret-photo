@@ -2,6 +2,25 @@
 {% block content %}
 
 <form method="POST" id="login-form">
+    <form method="POST" id="register-form">
+        <div class="container-center">
+        <div class="container-cloud">
+          <div class="sky">
+            <div class="sun"></div>
+            <div id="cloud-1" class="cloud-container">
+              <div class="cloud cloud-left"></div>
+              <div class="cloud cloud-right"></div>
+            </div>
+            <div id="cloud-2" class="cloud-container">
+              <div class="cloud cloud-left"></div>
+              <div class="cloud cloud-right"></div>
+            </div>
+          </div> 
+        </div>
+        </div>
+        <div class="signup-container">
+          <div class="signup">Sign in</div>
+        </div>
     {% csrf_token %}
     {{ form.as_p }}
     <label id="number_of_click"></label>
