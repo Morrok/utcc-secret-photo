@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.views import APIView
 from django.urls import reverse
 from django.contrib import messages
@@ -37,6 +37,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.http import HttpResponseRedirect
 
 
 class Home(APIView):
@@ -244,8 +245,12 @@ def picture_description_view(request):
     if request.method == 'POST':
         form = PictureDescriptionForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('gallery/')
+            image = form.cleaned_data['picture']
+            description = form.cleaned_data['description']
+            new_image = PictureDescription(picture=image, description=description)
+            new_image.save()
+
+            return HttpResponseRedirect('/gallery')
     else:
         form = PictureDescriptionForm()
     # Check the template name here
@@ -253,6 +258,9 @@ def picture_description_view(request):
 
 
 def gallery(request):
-    all_data = PictureDescription.objects.all()
-
+    all_data = PictureDescription.objects.all().order_by('-id')
     return render(request, 'secret_photo/gallery.html', {'data': all_data})
+
+def picture_detail(request, image_id):
+    image = get_object_or_404(PictureDescription, pk=image_id)
+    return render(request, 'secret_photo/details.html', {'image': image})

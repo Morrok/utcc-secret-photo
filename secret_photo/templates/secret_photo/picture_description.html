@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Upload Picture and Description</h1>
-    <form method="post" enctype="multipart/form-data" action="{% url 'secret_photo:gallery' %}">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <!-- File input -->
         <input type="file" id="picture-input" name="picture" accept="image/*" onchange="previewImage(event)" />
