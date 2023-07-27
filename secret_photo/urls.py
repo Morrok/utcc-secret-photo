@@ -15,8 +15,8 @@ urlpatterns = [
     path('authenticate/', views.authenticate, name='authenticate'),
     path('popup/', views.cookie_popup, name='popup'),
     path('give_consent/', views.give_consent, name='give_consent'),
-    # path('picture_description/gallery/', views.gallery, name='gallery'),
     path('upload/', views.picture_description_view,
          name='upload'),
     path('gallery/', views.gallery, name='gallery'),
+    path('gallery/<int:image_id>/', views.picture_detail, name='picture_detail'),
 ]
