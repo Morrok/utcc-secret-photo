@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Picture Detail</title>
+</head>
+<body>
+    <h1>Picture Detail</h1>
+    <div class="gallery-item">
+        <img src="{{ image.picture.url }}" alt="Picture">
+        <p>{{ image.description }}</p>
+    </div>
+</body>
+</html>
+
+
+{% endblock %}
