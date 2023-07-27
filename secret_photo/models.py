@@ -4,13 +4,13 @@ from cryptography.fernet import Fernet
 import base64
 import hashlib
 import json
-import uuid
 
 # key = Fernet.generate_key()
 
 
 class UserProfile(models.Model):
     # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_key = models.CharField(max_length=33)
     email = models.CharField(max_length=255, unique=True)
     # original_image = models.ImageField(upload_to='files/img/')
     image_data = models.BinaryField()

@@ -37,6 +37,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+import uuid
 
 
 class Home(APIView):
@@ -82,6 +83,7 @@ class RegisterCreate(Register):
                 profile = UserProfile.objects.filter(email=email)
                 if not profile:
                     profile = UserProfile()
+                    profile.user_key = uuid.uuid4().hex
                     profile.email = email
                     profile.image_data = profile.encrypt_image_data(
                         image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
@@ -249,7 +251,8 @@ def picture_description_view(request):
     else:
         form = PictureDescriptionForm()
     # Check the template name here
-    return render(request, 'secret_photo/picture_description.html', {'form': form})
+    return render(request, 'secret_photo/picture_description.html',
+                  {'form': form})
 
 
 def gallery(request):
