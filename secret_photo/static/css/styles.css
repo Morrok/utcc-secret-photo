@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Sniglet|Raleway:900);
+
 .image-container {
   position: relative;
   /* margin: 0 auto; */
@@ -49,7 +51,7 @@
 .carousel-container {
   position: relative;
   width: 100%;
-  height: 400px; /* Adjust the height as needed */
+  height: 400px;
   overflow: hidden;
 }
 
@@ -60,7 +62,7 @@
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out; /* Add a smooth transition effect */
+  transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-container img.active {
@@ -69,29 +71,31 @@
 /*for Why is Cloaked Moments better than other photo capture applications on mobile?*/
 .headline-container {
   text-align: center;
-  margin-top: 100px; /* Adjust the margin as needed */
+  font-family: 'Sniglet', cursive;
+  margin-top: 100px;
 }
 
 .headline {
-  font-size: 30px; /* Adjust the font size as needed */
+  font-size: 30px;
   font-weight: bold;
-  color: #8e6565; /* Initial color of the headline */
-  transition: color 0.3s; /* Add a smooth transition effect */
+  color: #8e6565;
+  transition: color 0.3s;
 }
 
 .headline:hover {
-  color: rgb(85, 68, 64); /* Color when hovering over the headline */
-  cursor: pointer; /* Show pointer cursor on hover */
+  color: rgb(85, 68, 64);
+  cursor: pointer;
 }
 
-/* static/cookie_popup/style.css */
+/*--------Cookie---------*/
 .cookie-popup {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 20px;
-  background-color: rgba(208, 181, 174, 0.8); /* Use rgba with alpha value for transparency */
+  background-color: rgba(208, 181, 174, 0.8);
+  font-family: 'Sniglet', cursive;
   text-align: center;
 }
 
@@ -100,16 +104,18 @@
 }
 
 .cookie-popup p {
-  margin: 0;
+  margin: 30;
 }
 
-/* Styling for the "Allow" button */
+
 .cookie-popup button {
   padding: 10px 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   background-color: #91705f;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 50px;
   cursor: pointer;
   font-size: 16px;
 }
@@ -117,36 +123,25 @@
 .cookie-popup button:hover {
   background-color: #705851;
 }
+/*--------Cookie---------*/
 
-/* Adjust the footer style */
+/*--------Footer---------*/
 footer {
   background-color: #c3afa3;
   padding: 20px 0;
   text-align: right;
-  font-size: 25px; /* You can adjust the font size as needed */
+  font-size: 25px;
   
 }
-
-/* .container {
-  max-width: 1200px;
-  margin: 0 auto;
-} */
-
-/* .social-icons {
-  display: inline-block;
-  margin-right: 10px;
-} */
-
 .icon-link {
   color: #555;
   margin-left: 10px;
   text-decoration: none;
-  font-size: 24px; /* You can adjust the icon size as needed */
+  font-size: 24px;
 }
 
-/* Style the icons on hover */
 .icon-link:hover {
-  color: #007bff; /* Change to your preferred color on hover */
+  color: #007bff;
 }
 
 .loader {
@@ -158,19 +153,173 @@ footer {
   z-index: 9999;
   background: url('/static/assets/img/loading.gif') 50% 50% no-repeat;
 }
+/*--------Footer---------*/
+/*---for button photo preview---*/
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+#btn_img_preview {
+  animation: pulse 2s ease-in-out infinite;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  font-family: 'Sniglet', cursive;
+}
+
+.button {
+  animation: pulse 2s ease-in-out infinite;
+  background-color: #eec0a6;
+  border: none;
+  border-radius: 59px;
+  color: rgb(68, 42, 42);
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+  background-color: rgb(145, 116, 109);
+  color: #ffffff;
+}
+
+.button.active {
+  background-color: #8faea4;
+  color: #ffffff;
+  font-size: 18px;
+}
+.button.active:hover {
+  background-color: #5a7c71;
+  color: #ffffff;
+}
+/*---for button photo preview---*/
 
 /*---------Register Page----------*/
-/* Styling for the form container */
+
+.signup-container {
+  text-align: center;
+  font-family: 'Sniglet', cursive;
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+.signup {
+  font-size: 30px;
+  font-weight: bold;
+  color: #675454; 
+  transition: color 0.3s;
+}
+
+.signup:hover {
+  color: rgb(252, 120, 90);
+  cursor: pointer;
+}
+
+.container-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+* {
+  margin: 0;
+  padding: 0;
+  /*color scheme*/
+  --sky-color: #bea499;
+  --cloud-front-color: #ffffff;
+  --cloud-back-color: rgb(255, 255, 255);
+  --sun-color: rgb(255, 196, 106);
+}
+
+.container-cloud {
+  display: flex;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+}
+
+.sky {
+  width: 110px;
+  height: 110px;
+  background-color: var(--sky-color);
+  border-radius: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.sun {
+  width: 50px;
+  height: 50px;
+  background-color: var(--sun-color);
+  border-radius: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  animation: 2s arise infinite alternate;
+  animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  z-index: 1;
+}
+
+#cloud-1 {
+  z-index: 2;
+}
+
+#cloud-2 {
+  transform: scaleX(-1) translate(-10px, 80px);
+  z-index: 0;
+}
+
+#cloud-2 .cloud {
+  background-color: var(--cloud-back-color);
+}
+
+.cloud-container {
+  position: relative;
+  transform: translate(-10px, 85px);
+}
+
+.cloud {
+  background-color: var(--cloud-front-color);
+  border-radius: 100%;
+  position: absolute;
+  bottom: 0;
+}
+
+.cloud-left {
+  width: 50px;
+  height: 50px;
+}
+
+.cloud-right {
+  width: 40px;
+  height: 40px;
+  left: 30px;
+}
+
+
 form {
   max-width: 800px;
   margin: 0 auto;
   padding: 30px;
   backdrop-filter: blur(30px) brightness(100%);
   background-color: #ffffff99;
-  /* background-color: rgba(239, 210, 190, 0.8); Transparent white background */
   border-radius: 30px;
   box-shadow: 0 2px 5px rgba(149, 110, 110, 0.1);
-  backdrop-filter: blur(5px); /* Apply a blur effect */
+  backdrop-filter: blur(5px);
 }
 
 input#id_email:focus {
@@ -184,7 +333,6 @@ input#id_number_of_click:focus {
   box-shadow: 0 0 5px #573d37;
 }
 
-/* Styling for form fields */
 input[type="email"],
 input[type="radio"] {
   width: 100%;
@@ -195,7 +343,7 @@ input[type="radio"] {
   border-radius: 20px;
 }
 
-/* Styling for radio buttons */
+
 input[type="radio"] {
   margin-right: 5px;
   appearance: none;
@@ -210,25 +358,33 @@ input[type="radio"] {
   vertical-align: top;
 }
 
-/* Custom radio button design */
 input[type="radio"]:checked {
   background-color: #c7a08a;
   border-color: #797067;
 }
 
+input::placeholder {
+  font-family: 'Sniglet', cursive;
+  font-size: 14px;
+  color: rgb(204, 167, 167);
+}
+
+input:hover::placeholder {
+  color: #ff4400;
+}
 
 label {
   font-weight: bolder;
   margin-right: 15px;
   cursor: pointer;
-  font-family: 'Comic Sans MS', sans-serif; 
+  font-family: 'Sniglet', cursive;
   color: #6c5349; 
   font-size: 15px;
   vertical-align: middle;
   padding: 5px 5px;
   
 }
-/* Add hover effect for radio buttons */
+
 input[type="radio"]:hover {
   border-color: #ffba7e; 
 }
@@ -239,8 +395,95 @@ input[type="email"]:hover {
 }
 
 label:hover {
-  color: rgb(248, 137, 97); /* Color change when hovering over the label */
+  color: rgb(248, 137, 97);
 }
+/*----Popup----*/
+.popup .overlay {
+  position:fixed;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background:rgba(255, 255, 255, 0.409);
+  z-index:1;
+  display:none;
+}
+
+.popup .content {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(0);
+  background:#ffe9db;
+  width:500px;
+  height:350px;
+  z-index:2;
+  text-align:center;
+  padding:20px;
+  box-sizing:border-box;
+  font-family: 'Sniglet', cursive;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.popup .content:hover {
+  background: #f99b79;
+  color:#ffffff;
+}
+
+.popup .content .note-text {
+  color: red;
+}
+.popup .content .note-text:hover {
+  color: rgb(0, 0, 0);
+}
+
+.popup .close-btn {
+  cursor:pointer;
+  position:absolute;
+  right:20px;
+  top:20px;
+  width:30px;
+  height:30px;
+  background:#222;
+  color:#fff;
+  font-size:25px;
+  font-weight:600;
+  line-height:30px;
+  text-align:center;
+  border-radius:50%;
+}
+
+.popup.active .overlay {
+  display:block;
+}
+
+.popup.active .content {
+  transition:all 300ms ease-in-out;
+  transform:translate(-50%,-50%) scale(1);
+}
+
+.button-howtodo {
+  font-family: 'Sniglet', cursive;
+  position:absolute;
+  top:2%;
+  right: -3%;
+  transform:translate(-50%,-50%);
+  padding:10px;
+  font-size:10px;
+  border:2px solid #ffd5b1;
+  color:#ea9050;
+  font-size: 20px;
+  background:#ffd5b1;
+}
+.button-howtodo:hover {
+  background: #de8868;
+  border-color: #de8868;
+  color:#ffffff;
+}
+/*---------End Register Page----------*/
+
+/*----------Sign in------*/
 
 /* .main-content-container {
   margin: 0 auto;
@@ -319,7 +562,7 @@ footer {
   color: #6d5f59;
   text-align: center;
   padding: 10px;
-  font-family: 'Lobster', sans-serif;
+  font-family: 'Sniglet', cursive;
   font-weight: bold;
 }
 
@@ -351,6 +594,15 @@ footer {
   --bs-btn-disabled-bg: brown;
   --bs-btn-disabled-border-color: brown;
 }
+
+button.btn {
+  font-family: 'Sniglet', cursive;  
+}
+
+.swal-modal {
+  font-family: 'Sniglet', cursive;
+}
+
 
 
 /* Media Queries */
@@ -416,4 +668,30 @@ footer {
   .home-image-container img {
     height: 40%;
   }
+}
+
+@keyframes lds-heart {
+  0% {
+    transform: scale(0.95);
+  }
+  5% {
+    transform: scale(1.1);
+  }
+  39% {
+    transform: scale(0.85);
+  }
+  45% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes arise{
+  from{ transform: translate(-50%,-50%);}
+  to{ transform: translate(-50%, 110%);}
 }
