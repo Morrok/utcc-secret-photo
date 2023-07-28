@@ -1,8 +1,21 @@
 from rest_framework import serializers
-from .models import UserProfile
+# from .models import CustomUser
+# from rest_framework.status import HTTP_422_UNPROCESSABLE_ENTITY
+# from rest_framework.exceptions import ValidationError as Invalid
 
 
-# class UserProfileSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserProfile
-#         fields = ['user', 'click_coordinates']
+class CustomUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    number_of_click = serializers.IntegerField(min_value=4, max_value=10)
+    image_data = serializers.FileField()
+
+    def validate_number_of_click(self, value):
+        allowed_values = [4, 6, 8, 10]
+        if value not in allowed_values:
+            raise serializers.ValidationError(
+                "Invalid value, allowed values are 4, 6, 8, and 10.")
+        return value
+
+
+def validations(request_data):
+    return

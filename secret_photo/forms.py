@@ -29,7 +29,7 @@ class RegisterForm(forms.Form):
         number_of_click = cleaned_data.get('number_of_click')
 
         if not email and not number_of_click:
-            raise forms.ValidationError('You have to write something!')
+            raise forms.ValidationError('Invalid Form')
 
 
 class LoginForm(forms.Form):

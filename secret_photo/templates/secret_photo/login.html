@@ -126,19 +126,7 @@
               })
               return;
             }
-            var click_limit = $('input[name="number_of_click"]:checked').val();
-            if (clickedZones.length == 0 || clickedZones.length != click_limit){
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'ข้อมูลไม่ถูกต้อง',
-                    text: 'กรุณาเลือกตำแหน่งตำแหน่งบนรูปภาพให้ครบตามจำนวน',
-                    showCancelButton: true,
-                    showConfirmButton: false,
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
-                  })
-                  return;
-            }
+
             Swal.fire({
                 icon: 'question',
                 title: 'ยืนยันการลงทะเบียน',
@@ -151,7 +139,7 @@
                 confirmButtonText: 'ยืนยัน',
             }).then((result) => {
                     if (result.isConfirmed) {
-                        confirmOrder();
+                        confirmLogin();
                     }
                 }) 
 
@@ -174,12 +162,12 @@
           }
 
          
-        function confirmOrder(){
-            var formData = new FormData($("#register-form")[0]);
+        function confirmLogin(){
+            var formData = new FormData($("#login-form")[0]);
             formData.append('coordinates', JSON.stringify(clickedZones))
             $('.loader').show();
             $.ajax({
-            url: '{% url "secret_photo:register_create" %}',
+            url: '{% url "secret_photo:authenticate" %}',
             type: 'POST',
             data: formData,
             processData: false,
@@ -189,20 +177,32 @@
                 $('.loader').hide();
                 //var host = response.gdcc_host
                 //var orderId = response.order_id
-                //window.location.href = host+'/suite_reserve/'+orderId+'/detail';
+                window.location.href = '{% url "secret_photo:homepage" %}'
             },
             error: function(xhr, status, error) {
                 var json = JSON.parse(xhr.responseText);
                 $('.loader').hide();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'เกิดข้อผิดพลาด',
-                    text: 'เกิดข้อผิดพลาด กรุณาติดต่อเจ้าหน้าที่',
-                    showCancelButton: true,
-                    showConfirmButton: false,
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
-                })
+                 if (xhr.status == 401) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: json.message,
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'ปิด'
+                    })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: json.message,
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'ปิด'
+                    })
+                }
                 }
             }); 
         }

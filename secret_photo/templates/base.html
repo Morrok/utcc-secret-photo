@@ -34,10 +34,21 @@
     <nav>
         <!-- Navigation menu goes here -->
         {% comment %} <div><a class="navbar-brand active" href=""></a></div> {% endcomment %}
+        {% comment %} {{user.is_authenticated}}
+        {% if user.is_authenticated %}
+          <p style="color:blue;">Email: {{ user.email }} &nbsp;<a href="{% url 'secret_photo:logout' %}">Log Out</a></p>
+        {% else %}
+          <p style="color:blue;">You are not logged in &nbsp; <a style="color:blue;" href="{% url 'secret_photo:login' %}">Log In</a></p>
+        {% endif %} {% endcomment %}
+
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <button id="btn_sign_in" class="btn btn-primary me-md-2" type="button" style="border-radius: 59px; color: blanchedalmond; --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: brown;--bs-btn-hover-border-color: brown;--bs-btn-active-bg: #831a1a;--bs-btn-active-border-color: #831a1a;--bs-btn-disabled-bg: brown;--bs-btn-disabled-border-color: brown;" onclick="window.location='{% url 'secret_photo:login' %}'; return false;">Sign in</button>
-          <button id="btn_sign_out" class="btn btn-primary" type="button" style="border-radius: 59px; color: blanchedalmond; --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: brown;--bs-btn-hover-border-color: brown;--bs-btn-active-bg: #831a1a;--bs-btn-active-border-color: #831a1a;--bs-btn-disabled-bg: brown;--bs-btn-disabled-border-color: brown;" onclick="window.location='{% url 'secret_photo:register' %}'; return false;">Sign up</button>
-        </div>
+          {% if user.is_authenticated %}
+            <p style="color:blue;">Email: {{ user.email }} &nbsp;<a href="{% url 'secret_photo:logout' %}">Log Out</a></p>
+          {% else %}
+            <button id="btn_sign_in" class="btn btn-primary me-md-2" type="button" style="border-radius: 59px; color: blanchedalmond; --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: brown;--bs-btn-hover-border-color: brown;--bs-btn-active-bg: #831a1a;--bs-btn-active-border-color: #831a1a;--bs-btn-disabled-bg: brown;--bs-btn-disabled-border-color: brown;" onclick="window.location='{% url 'secret_photo:login' %}'; return false;">Sign in</button>
+            <button id="btn_sign_up" class="btn btn-primary" type="button" style="border-radius: 59px; color: blanchedalmond; --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: brown;--bs-btn-hover-border-color: brown;--bs-btn-active-bg: #831a1a;--bs-btn-active-border-color: #831a1a;--bs-btn-disabled-bg: brown;--bs-btn-disabled-border-color: brown;" onclick="window.location='{% url 'secret_photo:register' %}'; return false;">Sign up</button>
+          {% endif %}
+          </div>
     </nav>
 
     <div class="main-content">

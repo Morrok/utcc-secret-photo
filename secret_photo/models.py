@@ -4,25 +4,66 @@ from cryptography.fernet import Fernet
 import base64
 import hashlib
 import json
-
 # key = Fernet.generate_key()
 
+# users/models.py
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin
+)
+from django.db import models
+from django.utils import timezone
+import uuid
 
-class UserProfile(models.Model):
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_key = models.CharField(max_length=33)
-    email = models.CharField(max_length=255, unique=True)
-    # original_image = models.ImageField(upload_to='files/img/')
-    image_data = models.BinaryField()
-    # Store the SHA-256 hash of the click coordinates
-    click_coordinates_hash = models.CharField(
-        max_length=64)  # A SHA-256 hash is 64 characters long
-    number_of_click = models.IntegerField()
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
+
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
+    user_key = models.CharField(max_length=33, default=uuid.uuid4().hex)
+
+    image_data = models.BinaryField(null=True, default=None)
+    number_of_click = models.IntegerField(default=0)
     failed_login_attempts = models.IntegerField(default=0)
     is_locked = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    last_login = models.DateTimeField(null=True, auto_now=True)
-    date_registered = models.DateTimeField(auto_now_add=True)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(default=timezone.now)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    # @property
+    # def is_anonymous(self):
+    #     return False
+
+    # @property
+    # def is_authenticated(self):
+    #     return True
 
     @staticmethod
     def encrypt_image_data(image_file, key):
@@ -41,7 +82,6 @@ class UserProfile(models.Model):
         """
         Decrypt previously encrypted image data
         """
-        print('test33333')
         fernet = Fernet(key)
         encrypted_data = base64.b64decode(encrypted_data_base64)
         image_data = fernet.decrypt(encrypted_data)
@@ -65,6 +105,37 @@ class UserProfile(models.Model):
 
         # Compare the hash with the stored hash
         return sha256_hash == self.click_coordinates_hash
+    # def set_verification_code(self, verification_code):
+    #     self.verification_code = verification_code
+
+    # def check_verification_code(self, verification_code):
+    #     return self.verification_code == verification_code
+
+
+# class UserProfile(models.Model):
+#     # user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     email = models.CharField(max_length=255, unique=True)
+#     user_key = models.CharField(max_length=33)
+#     # original_image = models.ImageField(upload_to='files/img/')
+#     image_data = models.BinaryField()
+#     # Store the SHA-256 hash of the click coordinates
+#     click_coordinates_hash = models.CharField(
+#         max_length=64)  # A SHA-256 hash is 64 characters long
+#     number_of_click = models.IntegerField()
+#     failed_login_attempts = models.IntegerField(default=0)
+#     is_locked = models.BooleanField(default=False)
+#     is_active = models.BooleanField(default=True)
+#     last_login = models.DateTimeField(null=True, auto_now=True)
+#     date_registered = models.DateTimeField(auto_now_add=True)
+
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = []
+
+    # def is_anonymous(self):
+    #     return True
+
+    # def is_authenticated(self):
+    #     return True
 
     # def save(self, *args, **kwargs):
     #     self.image_data = self.encrypt_image_data(self.image_data)
@@ -72,7 +143,8 @@ class UserProfile(models.Model):
 
 
 class CookieConsent(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('secret_photo.CustomUser',
+                             on_delete=models.CASCADE)
     consent_given = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

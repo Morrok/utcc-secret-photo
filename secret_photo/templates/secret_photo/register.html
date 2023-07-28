@@ -237,9 +237,16 @@
             success: function (response) {
                 console.log(response)
                 $('.loader').hide();
-                //var host = response.gdcc_host
-                //var orderId = response.order_id
-                //window.location.href = host+'/suite_reserve/'+orderId+'/detail';
+                Swal.fire({
+                  title: 'Success',
+                  text: 'Registered successfully',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '{% url "secret_photo:login" %}'
+                    }
+                })
             },
             error: function(xhr, status, error) {
                 var json = JSON.parse(xhr.responseText);

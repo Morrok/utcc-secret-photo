@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from rest_framework.views import APIView
+from rest_framework.views import APIView, View
 from django.urls import reverse
 from django.contrib import messages
 from rest_framework.decorators import (
@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
 from .models import (
-    UserProfile,
+    CustomUser,
     CookieConsent,
     PictureDescription
 )
@@ -39,105 +39,213 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import uuid
 from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model
+from secret_photo import serializers
 
 
-class Home(APIView):
-    form_class = RegisterForm
+# def base_html(request):
+#     context = {
+#         'user': request.user
+#     }
+#     print(context)
+#     return context
+# return JsonResponse({'user': request.user})
+
+
+class Home(View):
     template_name = 'secret_photo/homepage.html'
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        context = {
+
+        }
+        return render(request, self.template_name, context)
 
 
-class Register(APIView):
+class Register(View):
     form_class = RegisterForm
     template_name = 'secret_photo/register.html'
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('/')
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
 
 
-class RegisterCreate(Register):
+class RegisterCreate(APIView):
+    form_class = RegisterForm
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
 
+    # @csrf_exempt
     def post(self, request, *args, **kwargs):
-        tz = pytz.timezone('Asia/Bangkok')
-        image = request.FILES['img_photo']
-        print(request.FILES)
-        data = request.POST
-        print(data)
+        custom_user = get_user_model()
+        print(request.POST)
         form = self.form_class(request.POST)
-        email = data['email']
-        coordinates = json.loads(data['coordinates'])
-        print(coordinates)
-        sorted_data = sorted(
-            coordinates, key=lambda item: (item[0], item[1]))
-        coordinates = json.dumps(sorted_data)
-        print(coordinates)
 
         try:
             if form.is_valid():
-                number_of_click = int(form.cleaned_data['number_of_click'])
-                profile = UserProfile.objects.filter(email=email)
-                if not profile:
-                    profile = UserProfile()
+                data = request.POST
+                print(data)
+                coordinates = json.loads(data['coordinates'])
+                print(coordinates)
+                sorted_data = sorted(
+                    coordinates, key=lambda item: (item[0], item[1]))
+                coordinates = json.dumps(sorted_data)
+                print(coordinates)
+                data_dict = {
+                    'email': data['email'],
+                    'number_of_click': int(
+                        form.cleaned_data['number_of_click']),
+                    'image_data': request.FILES['img_photo']
+                }
+                serializer = serializers.CustomUserSerializer(
+                    data=data_dict)
+                serializer.is_valid(raise_exception=True)
+                # data = serializers.validate_and_enrich(serializer.data)
+                user = custom_user.objects.filter(
+                    email=serializer.validated_data.get('email'))
+                if not user:
+                    profile = CustomUser()
                     profile.user_key = uuid.uuid4().hex
-                    profile.email = email
-                    profile.image_data = profile.encrypt_image_data(
-                        image, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
-                    profile.click_coordinates_hash = \
-                        profile.get_click_coordinates_hash(coordinates)
-                    profile.number_of_click = number_of_click
-                    profile.date_registered = datetime.datetime.now(tz)
+                    profile.email = serializer.validated_data.get('email')
+                    profile.password = \
+                        CustomUser().get_click_coordinates_hash(coordinates)
+                    profile.image_data = CustomUser().encrypt_image_data(
+                        serializer.validated_data.get('image_data'),
+                        settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+                    profile.number_of_click = serializer.validated_data.get(
+                        'number_of_click')
                     profile.save()
                     return JsonResponse({
                         'status': 'success',
-                        'message': 'Coordinates registered successfully!'})
+                        'message': 'Registered successfully.'})
                 else:
                     return JsonResponse({
                         'status': 'Error',
-                        'message': 'Already Created.'})
+                        'message': f'Email already registered.'})
             else:
                 return JsonResponse({
                     'status': 'Error',
-                    'message': 'Someting Error.'})
+                    'message': 'Invalid Form.'})
         except Exception as e:
+            print(e)
             return JsonResponse({
                 'status': 'Error',
-                'message': e})
+                'message': str(e)},  status=400)
 
 
-class Login(APIView):
+class Login(View):
     form_class = LoginForm
     template_name = 'secret_photo/login.html'
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('/')
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
 
 
-@api_view(['GET'])
-def get_img_preview(request):
-    print(request.GET)
-    email = request.GET['email']
-    profile = UserProfile.objects.get(email=email)
-    decrypted_data = UserProfile.decrypt_image_data(
-        profile.image_data, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+class Logout(View):
 
-    # directory = os.getcwd()
-    # image_path = f'{directory}/order_reserve/static/assets/img/suite.png'
-    # with open(image_path, "rb") as image_file:
-    #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    # print(decrypted_data)
-    context = {
-        'img64': base64.b64encode(decrypted_data).decode('utf-8'),
-        'number_of_click': profile.number_of_click
-    }
-    # return render(request, 'secret_photo/homepage.html', context)
-    return JsonResponse(context)
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponseRedirect('/')
+
+
+class LoginAuthenticate(APIView):
+    form_class = LoginForm
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        custom_user = get_user_model()
+        form = self.form_class(request.POST)
+        data = request.POST
+        print(data)
+        if form.is_valid():
+            try:
+                coordinates = json.loads(data['coordinates'])
+                print(coordinates)
+                sorted_data = sorted(
+                    coordinates, key=lambda item: (item[0], item[1]))
+                coordinates = json.dumps(sorted_data)
+                print(coordinates)
+                password = CustomUser().get_click_coordinates_hash(coordinates)
+                user = custom_user.objects.get(
+                    email=data['email'], password=password)
+                if user is not None:
+                    login(request, user)
+                    print(request.user.is_authenticated)
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': 'User logged in.'})
+            except CustomUser.DoesNotExist as e:
+                return JsonResponse({
+                    'status': 'Error',
+                    'message': 'Invalid Email or Coordinates.'},
+                    status=401)
+
+        else:
+            return JsonResponse({
+                'status': 'Error',
+                'message': 'Invalid Form.'}, status=400)
+
+
+# def logout_view(request):
+#     logout(request)
+#     print(request.user.is_authenticated)
+#     return HttpResponseRedirect('/')
+
+
+class ImgPreview(View):
+    form_class = LoginForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(request.GET)
+        if form.is_valid():
+            try:
+                profile = CustomUser.objects.get(email=request.GET['email'])
+                decrypted_data = CustomUser.decrypt_image_data(
+                    profile.image_data,
+                    settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+                context = {
+                    'img64': base64.b64encode(decrypted_data).decode('utf-8'),
+                    'number_of_click': profile.number_of_click
+                }
+                return JsonResponse(context)
+            except CustomUser.DoesNotExist as e:
+                return JsonResponse({
+                    'status': 'Error',
+                    'message': 'Invalid Email'},
+                    status=401)
+        else:
+            return JsonResponse({
+                'status': 'Error',
+                'message': 'Invalid Form.'}, status=400)
+
+
+# @api_view(['GET'])
+# def get_img_preview(request):
+#     print(request.GET)
+#     email = request.GET['email']
+#     profile = CustomUser.objects.get(email=email)
+#     decrypted_data = CustomUser.decrypt_image_data(
+#         profile.image_data, settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+
+#     # directory = os.getcwd()
+#     # image_path = f'{directory}/order_reserve/static/assets/img/suite.png'
+#     # with open(image_path, "rb") as image_file:
+#     #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+#     # print(decrypted_data)
+#     context = {
+#         'img64': base64.b64encode(decrypted_data).decode('utf-8'),
+#         'number_of_click': profile.number_of_click
+#     }
+#     # return render(request, 'secret_photo/homepage.html', context)
+#     return JsonResponse(context)
 
 
 # @api_view(['GET', 'POST'])
@@ -182,33 +290,33 @@ def get_img_preview(request):
 
 
 # @csrf_exempt
-def authenticate(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        username = data.get('username')
-        # password = data.get('password')
-        coordinates = data.get('coordinates')
-        # First, authenticate the user using Django's built-in authentication
-        # user = authenticate(request, username=username)
-        profile = UserProfile.objects.get(username=username)
-        if username is not None:
-            # If the user is authenticated, compare the click coordinates hash
-            # profile = UserProfile.objects.get(user=user)
-            if profile.check_click_coordinates(coordinates):
-                response = {'status': 'success',
-                            'message': 'Authentication successful!'}
-            else:
-                response = {'status': 'failed',
-                            'message': 'Click coordinates do not match!'}
-        else:
-            response = {'status': 'failed',
-                        'message': 'Invalid username or password!'}
+# def authenticate(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         username = data.get('username')
+#         # password = data.get('password')
+#         coordinates = data.get('coordinates')
+#         # First, authenticate the user using Django's built-in authentication
+#         # user = authenticate(request, username=username)
+#         profile = CustomUser.objects.get(username=username)
+#         if username is not None:
+#             # If the user is authenticated, compare the click coordinates hash
+#             # profile = UserProfile.objects.get(user=user)
+#             if profile.check_click_coordinates(coordinates):
+#                 response = {'status': 'success',
+#                             'message': 'Authentication successful!'}
+#             else:
+#                 response = {'status': 'failed',
+#                             'message': 'Click coordinates do not match!'}
+#         else:
+#             response = {'status': 'failed',
+#                         'message': 'Invalid username or password!'}
 
-        return JsonResponse(response)
+#         return JsonResponse(response)
 
-    else:
-        return JsonResponse({'status': 'failed',
-                             'message': 'Invalid request method!'})
+#     else:
+#         return JsonResponse({'status': 'failed',
+#                              'message': 'Invalid request method!'})
 
 
 def cookie_popup(request):
