@@ -34,7 +34,12 @@ class RegisterForm(forms.Form):
 
 class LoginForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(
-        attrs={'placeholder': 'Enter your email'}))
+        attrs={'placeholder': 'Enter your email address'}))
+
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(
+        attrs={'placeholder': 'Enter your email address'}))
 
 
 class PictureDescriptionForm(forms.ModelForm):

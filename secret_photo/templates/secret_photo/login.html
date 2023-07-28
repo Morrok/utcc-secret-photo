@@ -39,6 +39,7 @@
         </div>
     </div>
     <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_login">Login</button>
+    <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_forgot_password" onclick="window.location='{% url 'secret_photo:forget_password' %}'; return false;">Forgot Password</button>
     {% comment %} <input type="submit" value="Submit" /> {% endcomment %}
 </form>
 <div class="loader">
@@ -47,15 +48,12 @@
 
 <!-- animation button Confirm to photo preview-->
 <script>
-    const button = document.getElementById('btn_img_preview');
-    let isActive = false;
-  
-    button.addEventListener('click', () => {
-      isActive = !isActive;
-      button.classList.toggle('active', isActive);
-      button.textContent = isActive ? 'Photo password is ready ✔' : 'Photo Preview';
-    });
-  </script>
+    function animationButtonImgPreview(isActive){
+        const button = document.getElementById('btn_img_preview');
+        button.classList.toggle('active', isActive);
+        button.textContent = isActive ? 'Photo password is ready ✔' : 'View Photo Password';
+    }
+</script>
 
   <!-- animation button Confirm to photo preview-->
   
@@ -259,10 +257,12 @@
                 $('#imagePreview').attr('src', imageUrl);
                 var textLabel = "Number of Click: "+response.number_of_click
                 $('#number_of_click').text(textLabel);
+                animationButtonImgPreview(true)
                 $('.loader').hide();
             },
             error: function(xhr, status, error) {
                 var json = JSON.parse(xhr.responseText);
+                animationButtonImgPreview(false)
                 $('.loader').hide();
                 Swal.fire({
                     icon: 'error',

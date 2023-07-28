@@ -27,6 +27,7 @@ from formtools.wizard.views import SessionWizardView
 from .forms import (
     RegisterForm,
     LoginForm,
+    ForgotPasswordForm,
     number_of_click_choice,
     PictureDescriptionForm
 )
@@ -178,7 +179,6 @@ class LoginAuthenticate(APIView):
                     email=data['email'], password=password)
                 if user is not None:
                     login(request, user)
-                    print(request.user.is_authenticated)
                     return JsonResponse({
                         'status': 'success',
                         'message': 'User logged in.'})
@@ -226,6 +226,46 @@ class ImgPreview(View):
                 'status': 'Error',
                 'message': 'Invalid Form.'}, status=400)
 
+
+class ForgotPassword(View):
+    form_class = ForgotPasswordForm
+    template_name = 'secret_photo/forgot_password.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('/')
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+
+class ResetPassword(APIView):
+    form_class = ForgotPasswordForm
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        custom_user = get_user_model()
+        form = self.form_class(request.POST)
+        data = request.POST
+        print(data)
+        if form.is_valid():
+            try:
+                user = custom_user.objects.get(email=data['email'])
+                if user is not None:
+
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': 'Already send.'})
+            except CustomUser.DoesNotExist as e:
+                return JsonResponse({
+                    'status': 'Error',
+                    'message': 'Invalid Email.'},
+                    status=401)
+
+        else:
+            return JsonResponse({
+                'status': 'Error',
+                'message': 'Invalid Form.'}, status=400)
 
 # @api_view(['GET'])
 # def get_img_preview(request):
