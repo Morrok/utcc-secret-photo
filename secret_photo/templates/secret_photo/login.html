@@ -7,7 +7,6 @@
     <label id="number_of_click"></label>
     <br>
     <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_img_preview">Photo Preview</button>
-   
     <div><br></div>
     <div class="image-container" id="image-container">
         <img id="imagePreview">
@@ -126,22 +125,19 @@
               })
               return;
             }
-
-            Swal.fire({
-                icon: 'question',
-                title: 'ยืนยันการลงทะเบียน',
-                text: 'ท่านยืนยันที่จะลงทะเบียนหรือไม่',
-                showCancelButton: true,
-                showConfirmButton: true,
-                cancelButtonColor: '#d33',
-                confirmButtonColor: '#3085d6',
-                cancelButtonText: 'ปิด',
-                confirmButtonText: 'ยืนยัน',
-            }).then((result) => {
-                    if (result.isConfirmed) {
-                        confirmLogin();
-                    }
-                }) 
+            if (clickedZones.length == 0){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Data',
+                    text: 'Please select the location of the coordinates in the picture according to the number.',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Close'
+                  })
+                  return;
+            }
+            confirmLogin();
 
         });
 
