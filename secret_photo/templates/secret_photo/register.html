@@ -34,7 +34,7 @@
     <div class="popup" id="popup-1">
       <div class="overlaypopup"></div>
       <div class="content">
-        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        <div class="close-btn" onclick="closeTogglePopup()">&times;</div>
         <h1>Instruction</h1>
         <p>1. Enter your email address correctly.</p>
         <p>2. Choose the number of coordinates you want to click to log in.</p>
@@ -58,8 +58,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
   function togglePopup(){
-  document.getElementById("popup-1").classList.toggle("active");
-}
+    document.getElementById("popup-1").classList.toggle("active");
+  }
+  function closeTogglePopup(){
+    document.getElementById("popup-1").classList.remove("active");
+  }
 </script>
 <script>
     $(document).ready(function() {
