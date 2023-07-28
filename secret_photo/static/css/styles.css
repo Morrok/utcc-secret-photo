@@ -154,6 +154,57 @@ footer {
   background: url('/static/assets/img/loading.gif') 50% 50% no-repeat;
 }
 /*--------Footer---------*/
+/*---for button photo preview---*/
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+#btn_img_preview {
+  animation: pulse 2s ease-in-out infinite;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  font-family: 'Sniglet', cursive;
+}
+
+.button {
+  animation: pulse 2s ease-in-out infinite;
+  background-color: #eec0a6;
+  border: none;
+  border-radius: 59px;
+  color: rgb(68, 42, 42);
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+  background-color: rgb(145, 116, 109);
+  color: #ffffff;
+}
+
+.button.active {
+  background-color: #8faea4;
+  color: #ffffff;
+  font-size: 18px;
+}
+.button.active:hover {
+  background-color: #5a7c71;
+  color: #ffffff;
+}
+/*---for button photo preview---*/
 
 /*---------Register Page----------*/
 
