@@ -7,16 +7,17 @@
     <title>Gallery List</title>
 </head>
 <body>
-    <h1>Gallery List</h1>
+    <h1 class="headtext" >Gallery List</h1>
     <style>
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
+            font-family: 'Sniglet', cursive;
         }
 
         .gallery-item {
-            border: 1px solid #ccc;
+            border: 2px solid #b8a49a;
             padding: 10px;
         }
 
@@ -25,7 +26,9 @@
             height: auto;
         }
     </style>
-    <a href="{% url 'secret_photo:upload' %}" class="btn btn-primary">Add Pictures</a>
+    <div class="addpic-center">
+    <a href="{% url 'secret_photo:upload' %}" class="addpic">+</a>
+    </div>
     <div class="gallery">
         {% for item in data %}
             <div class="gallery-item">

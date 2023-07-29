@@ -483,6 +483,45 @@ label:hover {
 }
 /*----End Popup----*/
 
+/*-----addpic-----*/
+/* .addpic-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+} */
+.addpic {
+  padding: 1px 65px;
+  width: 200px;
+  height: 200px;
+  font-family: 'Sniglet', cursive;
+  font-size: 140px;
+  text-decoration: none; 
+  border:1px solid #fbd5b3;
+  background-color: #c6a18f;
+  color: #ffffff;
+  border-radius: 30px;
+  cursor: pointer;
+  display: block;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  cursor: pointer;
+}
+
+.addpic:hover {
+  color: #000000;
+  border:1px solid #a7907d;
+  background-color: rgb(184, 159, 146);
+}
+
+.headtext{
+  font-family: 'Sniglet', cursive; 
+  color: #564b47;
+}
+.detail_text{
+  font-family: 'Sniglet', cursive; 
+  color: #aa9891;
+}
+
 /*----------Sign in------*/
 
 .email-text {
