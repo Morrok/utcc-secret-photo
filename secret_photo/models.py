@@ -1,12 +1,8 @@
 from django.db import models
-# from django.contrib.auth.models import User
 from cryptography.fernet import Fernet
 import base64
 import hashlib
 import json
-# key = Fernet.generate_key()
-
-# users/models.py
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -45,7 +41,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
     user_key = models.CharField(max_length=33, default=uuid.uuid4().hex)
-
     image_data = models.BinaryField(null=True, default=None)
     number_of_click = models.IntegerField(default=0)
     failed_login_attempts = models.IntegerField(default=0)
@@ -59,24 +54,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    # @property
-    # def is_anonymous(self):
-    #     return False
-
-    # @property
-    # def is_authenticated(self):
-    #     return True
-
     @staticmethod
     def encrypt_image_data(image_file, key):
         """
         Encrypt image data using symmetric encryption and the provided key
         """
-        # print(key)
         fernet = Fernet(key)
         image_data = image_file.read()
         encrypted_data = fernet.encrypt(image_data)
-        # print(encrypted_data)
         return base64.b64encode(encrypted_data)
 
     @staticmethod
@@ -107,41 +92,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
         # Compare the hash with the stored hash
         return sha256_hash == self.click_coordinates_hash
-    # def set_verification_code(self, verification_code):
-    #     self.verification_code = verification_code
 
-    # def check_verification_code(self, verification_code):
-    #     return self.verification_code == verification_code
-
-
-# class UserProfile(models.Model):
-#     # user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     email = models.CharField(max_length=255, unique=True)
-#     user_key = models.CharField(max_length=33)
-#     # original_image = models.ImageField(upload_to='files/img/')
-#     image_data = models.BinaryField()
-#     # Store the SHA-256 hash of the click coordinates
-#     click_coordinates_hash = models.CharField(
-#         max_length=64)  # A SHA-256 hash is 64 characters long
-#     number_of_click = models.IntegerField()
-#     failed_login_attempts = models.IntegerField(default=0)
-#     is_locked = models.BooleanField(default=False)
-#     is_active = models.BooleanField(default=True)
-#     last_login = models.DateTimeField(null=True, auto_now=True)
-#     date_registered = models.DateTimeField(auto_now_add=True)
-
-    # USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = []
-
-    # def is_anonymous(self):
-    #     return True
-
-    # def is_authenticated(self):
-    #     return True
-
-    # def save(self, *args, **kwargs):
-    #     self.image_data = self.encrypt_image_data(self.image_data)
-    #     super().save(*args, **kwargs)
 
 def register_user(validated_data, coordinates_zone):
     custom_user = get_user_model()
@@ -168,12 +119,10 @@ def register_user(validated_data, coordinates_zone):
 
 
 def reset_password(user, validated_data, coordinates_zone):
-    # custom_user = get_user_model()
     coordinates = json.loads(coordinates_zone)
     sorted_data = sorted(
         coordinates, key=lambda item: (item[0], item[1]))
     coordinates = json.dumps(sorted_data)
-    # user = CustomUser().objects.get(email=validated_data.get('email'))
     user.password = \
         CustomUser().get_click_coordinates_hash(coordinates)
     user.image_data = CustomUser().encrypt_image_data(

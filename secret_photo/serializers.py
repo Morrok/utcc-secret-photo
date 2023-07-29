@@ -1,7 +1,4 @@
 from rest_framework import serializers
-# from .models import CustomUser
-# from rest_framework.status import HTTP_422_UNPROCESSABLE_ENTITY
-# from rest_framework.exceptions import ValidationError as Invalid
 
 
 class CustomUserSerializer(serializers.Serializer):
