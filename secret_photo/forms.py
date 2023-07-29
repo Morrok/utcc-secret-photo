@@ -42,6 +42,17 @@ class ForgotPasswordForm(forms.Form):
         attrs={'placeholder': 'Enter your email address'}))
 
 
+class ResetPasswordConfirmForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(
+        attrs={'readonly': 'readonly'},
+    ))
+    number_of_click = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=number_of_click_choice,
+        label='Number Of Click'
+    )
+
+
 class PictureDescriptionForm(forms.ModelForm):
     class Meta:
         model = PictureDescription

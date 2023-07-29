@@ -1,6 +1,7 @@
 from pathlib import Path
 import environ
 import os
+from datetime import timedelta
 
 env_schema = dict(
     DEBUG=(bool, False),
@@ -11,16 +12,20 @@ env_schema = dict(
     USE_TZ=(bool, True),
     STATIC_URL=(str, 'static/'),
     LOGIN_URL=(str, 'login/'),
-    # DEFAULT_AUTO_FIELD=(str, 'django.db.models.BigAutoField'),
     LOG_LEVEL=(str, 'INFO'),
-    # MONGO_URI=(str, 'mongodb://localhost:27017/sao-local'),
     DB_NAME=(str, 'postgres'),
     DB_USER=(str, 'postgres'),
     DB_PASSWORD=(str, '1234'),
     DB_HOST=(str, 'localhost'),
     DB_PORT=(str, '5432'),
     AUTHEN_SECRET_KEY=(str, 'RL72rg9bPzajnmwP9cB8vrKuJaIN6Iy6N99gncjD8QE='),
-    # GDCC_HOST=(str, 'localhost'),
+    EMAIL_HOST=(str, 'localhost'),
+    EMAIL_PORT=(str, '1025'),
+    EMAIL_USE_TLS=(bool, False),
+    EMAIL_HOST_USER=(str, 'your-email@gmail.com'),
+    EMAIL_HOST_PASSWORD=(str, 'your-gmail-password'),
+    WEB_PROTOCAL=(str, 'http'),
+    WEB_DOMAIN_NAME=(str, 'localhost:8000')
     # PROMETHEUS_HOST=(str, 'localhost'),
     # HTTP Retry
     # HTTP_RETRIES_MAX_REQUESTS=(int, 15),
@@ -189,3 +194,5 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'secret_photo.CustomUser'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+PASSWORD_RESET_TIMEOUT = 60

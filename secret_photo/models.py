@@ -15,6 +15,8 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils import timezone
 import uuid
+from django.contrib.auth import get_user_model
+from django.conf import settings
 
 
 class CustomUserManager(BaseUserManager):
@@ -70,7 +72,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         Encrypt image data using symmetric encryption and the provided key
         """
-        print(key)
+        # print(key)
         fernet = Fernet(key)
         image_data = image_file.read()
         encrypted_data = fernet.encrypt(image_data)
@@ -140,6 +142,46 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # def save(self, *args, **kwargs):
     #     self.image_data = self.encrypt_image_data(self.image_data)
     #     super().save(*args, **kwargs)
+
+def register_user(validated_data, coordinates_zone):
+    custom_user = get_user_model()
+    coordinates = json.loads(coordinates_zone)
+    sorted_data = sorted(
+        coordinates, key=lambda item: (item[0], item[1]))
+    coordinates = json.dumps(sorted_data)
+    user = custom_user.objects.filter(
+        email=validated_data.get('email'))
+    if not user:
+        profile = CustomUser()
+        profile.user_key = uuid.uuid4().hex
+        profile.email = validated_data.get('email')
+        profile.password = \
+            CustomUser().get_click_coordinates_hash(coordinates)
+        profile.image_data = CustomUser().encrypt_image_data(
+            validated_data.get('image_data'),
+            settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+        profile.number_of_click = validated_data.get(
+            'number_of_click')
+        profile.save()
+        return True
+    return False
+
+
+def reset_password(user, validated_data, coordinates_zone):
+    # custom_user = get_user_model()
+    coordinates = json.loads(coordinates_zone)
+    sorted_data = sorted(
+        coordinates, key=lambda item: (item[0], item[1]))
+    coordinates = json.dumps(sorted_data)
+    # user = CustomUser().objects.get(email=validated_data.get('email'))
+    user.password = \
+        CustomUser().get_click_coordinates_hash(coordinates)
+    user.image_data = CustomUser().encrypt_image_data(
+        validated_data.get('image_data'),
+        settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+    user.number_of_click = validated_data.get(
+        'number_of_click')
+    user.save()
 
 
 class CookieConsent(models.Model):
