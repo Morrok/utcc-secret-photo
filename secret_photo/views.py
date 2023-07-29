@@ -90,7 +90,6 @@ class RegisterCreate(APIView):
                     'error_code': 'error',
                     'message': 'Invalid Form.'})
         except Exception as e:
-            print(e)
             return JsonResponse({
                 'error_code': 'error',
                 'message': str(e)},  status=400)
@@ -123,15 +122,12 @@ class LoginAuthenticate(APIView):
         custom_user = get_user_model()
         form = self.form_class(request.POST)
         data = request.POST
-        print(data)
         if form.is_valid():
             try:
                 coordinates = json.loads(data['coordinates'])
-                print(coordinates)
                 sorted_data = sorted(
                     coordinates, key=lambda item: (item[0], item[1]))
                 coordinates = json.dumps(sorted_data)
-                print(coordinates)
                 password = CustomUser().get_click_coordinates_hash(coordinates)
                 user = custom_user.objects.get(
                     email=data['email'], password=password)
@@ -199,12 +195,10 @@ class ResetPassword(APIView):
         custom_user = get_user_model()
         form = self.form_class(request.POST)
         data = request.POST
-        print(data)
         if form.is_valid():
             try:
                 user = custom_user.objects.get(email=data['email'])
                 if user is not None:
-                    print('test1')
                     subject = 'Password Reset for Cloaked Moments'
                     template_name = 'email_template/password_reset_email.html'
                     from_email = settings.EMAIL_HOST_USER
@@ -221,7 +215,6 @@ class ResetPassword(APIView):
 
                     send_mail(subject, plain_message, from_email,
                               to_email, html_message=email_content)
-                    print('test2')
                     return JsonResponse({
                         'error_code': 'success',
                         'message': 'Already send.'})
@@ -242,13 +235,11 @@ class ResetPasswordView(View):
     template_name = 'secret_photo/reset_password.html'
 
     def get(self, request, uidb64, token, *args, **kwargs):
-        print('test')
         if request.user.is_authenticated:
             return redirect('/')
 
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
-            print(uid)
             user = get_user_model().objects.get(user_key=uid)
         except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
             user = None
@@ -269,9 +260,6 @@ class ResetPasswordConfirm(View):
     form_class = ResetPasswordConfirmForm
 
     def post(self, request, uidb64, token):
-        # custom_user = get_user_model()
-        print(request.POST)
-        print(uidb64, token)
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
             user = get_user_model().objects.get(user_key=uid)
@@ -308,7 +296,6 @@ class ResetPasswordConfirm(View):
                         'error_code': 'Error',
                         'message': 'Invalid Form.'})
             except Exception as e:
-                print(e)
                 return JsonResponse({
                     'error_code': 'Error',
                     'message': str(e)},  status=400)

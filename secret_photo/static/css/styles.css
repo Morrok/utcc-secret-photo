@@ -4,7 +4,7 @@
   position: relative;
   /* margin: 0 auto; */
   /* width: auto; */
-  height: 600px;
+  height: 400px;
   text-align: center;
 }
 
@@ -12,6 +12,8 @@
   display: block;
   width: 100%;
   height: 100%;
+  min-width: 740px;
+  overflow-x: auto;
 }
 
 .home-image-container {
@@ -1988,6 +1990,8 @@ header {
   padding: 20px;
   margin: 0 auto;
   max-width: 980px;
+  min-width: 980px;
+  overflow-x: auto;
 }
 
 /* Navigation Styles */
@@ -1996,6 +2000,8 @@ nav {
   padding: 20px;
   margin: 0 auto;
   max-width: 980px;
+  min-width: 980px;
+  overflow-x: auto;
 }
 
 nav ul {
@@ -2022,18 +2028,10 @@ nav a {
   position: relative; 
   max-width: 980px;
   background-color: #ffe3cf;
-  border-left: 2px solid #c3afa3;;
-  border-right: 2px solid #c3afa3;;
-}
-
-.main-content-2 {
-  margin: 0 auto;
-  padding: 20px;
-  position: relative;
-  max-width: 980px;
-  background-color: #ffe3cf;
-  border-left: 2px solid #c3afa3;;
-  border-right: 2px solid #c3afa3;;
+  border-left: 2px solid #c3afa3;
+  border-right: 2px solid #c3afa3;
+  min-width: 980px;
+  overflow-x: auto;
 }
 
 footer {
@@ -2043,6 +2041,8 @@ footer {
   padding: 10px;
   font-family: 'Sniglet', cursive;
   font-weight: bold;
+  min-width: 980px;
+  overflow-x: auto;
 }
 
 
@@ -2100,10 +2100,6 @@ button.btn {
     float: none;
     width: 70%;
   }
-  .main-content-2 {
-    float: none;
-    width: 70%;
-  }
   .sidebar {
     float: right;
     width: 30%;
@@ -2126,7 +2122,6 @@ button.btn {
 @media screen and (max-width: 767px) {
   /* Example: Hide the sidebar and adjust font size */
   .main-content,
-  .main-content-2,
   .sidebar {
     float: none;
     width: 100%;

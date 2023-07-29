@@ -56,9 +56,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     @staticmethod
     def encrypt_image_data(image_file, key):
-        """
-        Encrypt image data using symmetric encryption and the provided key
-        """
         fernet = Fernet(key)
         image_data = image_file.read()
         encrypted_data = fernet.encrypt(image_data)
@@ -66,31 +63,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     @staticmethod
     def decrypt_image_data(encrypted_data_base64, key):
-        """
-        Decrypt previously encrypted image data
-        """
         fernet = Fernet(key)
         encrypted_data = base64.b64decode(encrypted_data_base64)
         image_data = fernet.decrypt(encrypted_data)
         return image_data
 
     def get_click_coordinates_hash(self, coordinates):
-        # Serialize coordinates
         data = json.dumps(coordinates).encode()
-
-        # Hash the data using SHA-256
         sha256_hash = hashlib.sha256(data).hexdigest()
-
         return sha256_hash
 
     def check_click_coordinates(self, coordinates):
-        # Serialize coordinates
         data = json.dumps(coordinates).encode()
-
-        # Hash the data using SHA-256
         sha256_hash = hashlib.sha256(data).hexdigest()
-
-        # Compare the hash with the stored hash
         return sha256_hash == self.click_coordinates_hash
 
 
