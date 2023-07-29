@@ -195,4 +195,4 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'secret_photo.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-PASSWORD_RESET_TIMEOUT = 60
+# PASSWORD_RESET_TIMEOUT = 60
