@@ -485,8 +485,8 @@ label:hover {
 /*----------Sign in------*/
 .email-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .email-text {
@@ -498,6 +498,7 @@ label:hover {
   font-size: 18px;
   font-weight: bold;
   display: block;
+  margin-bottom: 10px;
 
 }
 .email-text:hover {
@@ -507,6 +508,7 @@ label:hover {
 
 .logout-button {
   padding: 8px 16px;
+  width: 100px;
   font-family: 'Sniglet', cursive;
   align-items: center;
   border:3px solid #fbd5b3;
@@ -522,6 +524,9 @@ label:hover {
   color: #000000;
   border:3px solid #a7907d;
   background-color: rgb(233, 69, 50); /* Darker shade of red on hover */
+}
+.btn-primary {
+  margin-left: 10px; /* Add some spacing between buttons */
 }
 /* .email-text {
   margin-right: 600px;

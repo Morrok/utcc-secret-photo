@@ -113,7 +113,7 @@
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
+                    cancelButtonText: 'Close'
                   })
                 return;
             }
@@ -152,12 +152,12 @@
               event.preventDefault();
               Swal.fire({
                 icon: 'warning',
-                title: 'ข้อมูลไม่ถูกต้อง',
-                text: 'กรุณาระบุข้อมูลให้ครบถ้วนและลงทะเบียนอีกครั้ง',
+                title: 'Invalid Data',
+                text: 'Please complete the information.',
                 showCancelButton: true,
                 showConfirmButton: false,
                 cancelButtonColor: '#d33',
-                cancelButtonText: 'ปิด'
+                cancelButtonText: 'Close'
               })
               return;
             }
@@ -189,7 +189,7 @@
               showCancelButton: true,
               showConfirmButton: false,
               cancelButtonColor: '#d33',
-              cancelButtonText: 'ปิด'
+              cancelButtonText: 'Close'
             });
           }
 
@@ -217,22 +217,22 @@
                  if (xhr.status == 401) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'เกิดข้อผิดพลาด',
+                        title: 'Error',
                         text: json.message,
                         showCancelButton: true,
                         showConfirmButton: false,
                         cancelButtonColor: '#d33',
-                        cancelButtonText: 'ปิด'
+                        cancelButtonText: 'Close'
                     })
                 }else{
                     Swal.fire({
                         icon: 'error',
-                        title: 'เกิดข้อผิดพลาด',
+                        title: 'Error',
                         text: json.message,
                         showCancelButton: true,
                         showConfirmButton: false,
                         cancelButtonColor: '#d33',
-                        cancelButtonText: 'ปิด'
+                        cancelButtonText: 'Close'
                     })
                 }
                 }
@@ -266,12 +266,12 @@
                 $('.loader').hide();
                 Swal.fire({
                     icon: 'error',
-                    title: 'เกิดข้อผิดพลาด',
-                    text: 'เกิดข้อผิดพลาด กรุณาติดต่อเจ้าหน้าที่',
+                    title: 'Invalid Data',
+                    text: 'You have not specify your email.',
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonColor: '#d33',
-                    cancelButtonText: 'ปิด'
+                    cancelButtonText: 'Close'
                 })
                 }
             }); 
