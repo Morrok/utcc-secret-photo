@@ -610,7 +610,7 @@ label:hover {
 	top: 17px;
 	right: 22px;
 }
-.bottom
+.bottomcamera
 {
 	width: 264px;
 	height: 112px;
@@ -624,7 +624,7 @@ label:hover {
 	border-top:15px solid #867568;
 	-webkit-box-shadow: inset 0 -20px 0 0 #71665d;
 }
-.bottom:before
+.bottomcamera:before
 {
 	content: "";
 	background-color: #282e3a;
@@ -633,7 +633,7 @@ label:hover {
 	display: block;
 	margin:14px auto 0 auto;
 }
-.bottom:after{
+.bottomcamera:after{
 	content: "";
 	position: absolute;
 	top: 30px;
@@ -651,7 +651,7 @@ label:hover {
 	box-shadow:0 14px 0 0 #ae9f94,
     0 -16px 0 0 #c3d1dd;
 }
-.eye
+.eyecamera
 {
 	width: 37px;
 	height: 37px;
@@ -666,7 +666,7 @@ label:hover {
 						0 	0 		0 	45px 	#ecf0f1,
 						0 	10px 	0 	45px 	rgba(0,0,0,0.2);
 }
-.eye:before
+.eyecamera:before
 {
 	content: "";
 	background-color: #a3bfd5;
@@ -677,7 +677,7 @@ label:hover {
 	top: -16px;
 	left: -16px;
 }
-.eye:after
+.eyecamera:after
 {
 	content: "";
 	background-color: #6078a3;
