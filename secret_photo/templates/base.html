@@ -51,10 +51,21 @@
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
           {% if user.is_authenticated %}
-          <div class="email-container">
+          <p class="email-text">❥ {{ user.email }}</p>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'secret_photo:homepage' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'secret_photo:gallery' %}">Gallery</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">support</a>
+          </li>
+          <button class="logout-button" onclick="window.location.href='{% url 'secret_photo:logout' %}'">Log Out</button>
+          <!-- <div class="email-container">
             <p class="email-text">❥ {{ user.email }}</p>
             <button class="logout-button" onclick="window.location.href='{% url 'secret_photo:logout' %}'">Log Out</button>
-          </div>
+          </div> -->
           {% else %}
             <button id="btn_sign_in" class="btn btn-primary me-md-2" type="button" style="border-radius: 59px; color: blanchedalmond; --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: brown;--bs-btn-hover-border-color: brown;--bs-btn-active-bg: #831a1a;--bs-btn-active-border-color: #831a1a;--bs-btn-disabled-bg: brown;--bs-btn-disabled-border-color: brown;" onclick="window.location='{% url 'secret_photo:login' %}'; return false;">Sign in</button>
             <button id="btn_sign_up" class="btn btn-primary" type="button" style="border-radius: 59px; color: blanchedalmond; --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: brown;--bs-btn-hover-border-color: brown;--bs-btn-active-bg: #831a1a;--bs-btn-active-border-color: #831a1a;--bs-btn-disabled-bg: brown;--bs-btn-disabled-border-color: brown;" onclick="window.location='{% url 'secret_photo:register' %}'; return false;">Sign up</button>

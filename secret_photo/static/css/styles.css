@@ -485,12 +485,46 @@ label:hover {
 }
 /*----End Popup----*/
 
-/*----------Sign in------*/
-.email-container {
+/*-----addpic-----*/
+/* .addpic-center{
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: center;  
+} */
+.addpic {
+  padding: 1px 65px;
+  width: 200px;
+  height: 200px;
+  font-family: 'Sniglet', cursive;
+  font-size: 140px;
+  text-decoration: none; 
+  border:1px solid #fbd5b3;
+  background-color: #c6a18f;
+  color: #ffffff;
+  border-radius: 30px;
+  cursor: pointer;
+  display: block;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  cursor: pointer;
 }
+
+.addpic:hover {
+  color: #000000;
+  border:1px solid #a7907d;
+  background-color: rgb(184, 159, 146);
+}
+
+.headtext{
+  font-family: 'Sniglet', cursive; 
+  color: #564b47;
+}
+.detail_text{
+  font-family: 'Sniglet', cursive; 
+  color: #aa9891;
+}
+
+/*----------Sign in------*/
 
 .email-text {
   background-image: linear-gradient(to right, #bb4242,#864545,#794848, #614242);
@@ -502,16 +536,33 @@ label:hover {
   font-weight: bold;
   display: block;
   margin-bottom: 10px;
+  margin-right: 30%;
+  margin-top: 1%;
 
 }
 .email-text:hover {
   color: rgb(0, 0, 0);
 }
-
+.nav-item{
+  font-family: 'Sniglet', cursive;
+  font-size: 18px; 
+  margin-top: 1%;
+  font-weight: normal;
+  display: block;
+  color:#573d37;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+}
+.nav-item:hover{
+  transform: scale(1.1);
+  color:#a7452f;
+  text-decoration: underline;
+}
 
 .logout-button {
   padding: 8px 16px;
   width: 85px;
+  height: 40px;
   font-family: 'Sniglet', cursive;
   font-size: 14px;
   align-items: center;
@@ -523,15 +574,15 @@ label:hover {
   display: block;
 }
 
-/* Style the button on hover */
 .logout-button:hover {
   color: #000000;
   border:1px solid #a7907d;
   background-color: rgb(233, 69, 50);
 }
-.btn-primary {
+/* .btn-primary {
   margin-left: 10px;
-}
+} */
+
 /*-------introduce yourself-------*/
 .img-center img {
   max-width: 250px;
