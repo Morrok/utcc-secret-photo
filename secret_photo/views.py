@@ -1,15 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.views import APIView, View
-# from django.urls import reverse
-# from django.contrib import messages
-# from rest_framework.decorators import (
-#     api_view,
-#     permission_classes,
-#     authentication_classes
-# )
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from django.contrib.auth.decorators import login_required
 import json
 from .models import (
     CustomUser,
@@ -18,14 +9,8 @@ from .models import (
     register_user,
     reset_password
 )
-# import datetime
-# import pytz
-# from django.db import transaction
-# from django.db.models import Q
-# import os
 import base64
 from django.conf import settings
-# from formtools.wizard.views import SessionWizardView
 from .forms import (
     RegisterForm,
     LoginForm,
@@ -33,15 +18,11 @@ from .forms import (
     ResetPasswordConfirmForm,
     PictureDescriptionForm
 )
-# from django.core.files.storage import FileSystemStorage
-# from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-# from rest_framework.permissions import AllowAny
-# from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+# from rest_framework.authentication import TokenAuthentication
+# from rest_framework.permissions import IsAuthenticated
 import uuid
 from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from secret_photo import serializers
 from django.core.mail import send_mail
@@ -51,15 +32,6 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_str as force_text
-
-
-# def base_html(request):
-#     context = {
-#         'user': request.user
-#     }
-#     print(context)
-#     return context
-# return JsonResponse({'user': request.user})
 
 
 class HomeView(View):
@@ -88,23 +60,12 @@ class RegisterCreate(APIView):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
 
-    # @csrf_exempt
     def post(self, request, *args, **kwargs):
-        custom_user = get_user_model()
-        print(request.POST)
         form = self.form_class(request.POST)
 
         try:
             if form.is_valid():
                 data = request.POST
-
-                # print(data)
-                # coordinates = json.loads(data['coordinates'])
-                # print(coordinates)
-                # sorted_data = sorted(
-                #     coordinates, key=lambda item: (item[0], item[1]))
-                # coordinates = json.dumps(sorted_data)
-                # print(coordinates)
                 data_dict = {
                     'email': data['email'],
                     'number_of_click': int(
@@ -120,24 +81,6 @@ class RegisterCreate(APIView):
                     return JsonResponse({
                         'error_code': 'success',
                         'message': 'Registered successfully.'})
-                # data = serializers.validate_and_enrich(serializer.data)
-                # user = custom_user.objects.filter(
-                #     email=serializer.validated_data.get('email'))
-                # if not user:
-                #     profile = CustomUser()
-                #     profile.user_key = uuid.uuid4().hex
-                #     profile.email = serializer.validated_data.get('email')
-                #     profile.password = \
-                #         CustomUser().get_click_coordinates_hash(coordinates)
-                #     profile.image_data = CustomUser().encrypt_image_data(
-                #         serializer.validated_data.get('image_data'),
-                #         settings.AUTHEN_SECRET_KEY.encode('utf-8'))
-                #     profile.number_of_click = serializer.validated_data.get(
-                #         'number_of_click')
-                #     profile.save()
-                # return JsonResponse({
-                #     'status': 'success',
-                #     'message': 'Registered successfully.'})
                 else:
                     return JsonResponse({
                         'error_code': 'duplicate',
@@ -207,12 +150,6 @@ class LoginAuthenticate(APIView):
             return JsonResponse({
                 'error_cdoe': 'error',
                 'message': 'Invalid Form.'}, status=400)
-
-
-# def logout_view(request):
-#     logout(request)
-#     print(request.user.is_authenticated)
-#     return HttpResponseRedirect('/')
 
 
 class ImgPreviewView(View):

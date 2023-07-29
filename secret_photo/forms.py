@@ -20,12 +20,10 @@ class RegisterForm(forms.Form):
         choices=number_of_click_choice,
         label='Number Of Click'
     )
-    # image = forms.FileField()
 
     def clean(self):
         cleaned_data = super().clean()
         email = cleaned_data.get('email')
-        # image = cleaned_data.get('image')
         number_of_click = cleaned_data.get('number_of_click')
 
         if not email and not number_of_click:

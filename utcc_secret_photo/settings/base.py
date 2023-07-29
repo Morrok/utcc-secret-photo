@@ -26,15 +26,12 @@ env_schema = dict(
     EMAIL_HOST_PASSWORD=(str, 'your-gmail-password'),
     WEB_PROTOCAL=(str, 'http'),
     WEB_DOMAIN_NAME=(str, 'localhost:8000')
-    # PROMETHEUS_HOST=(str, 'localhost'),
     # HTTP Retry
     # HTTP_RETRIES_MAX_REQUESTS=(int, 15),
     # HTTP_RETRIES_MAX_REQUESTS_BPMN_SLOWNESS=(int, 5),
     # HTTP_RETRIES_BACKOFF_FACTOR=(float, 0.2),
     # HTTP_RETRIES_STATUS_CODE=(list, [502, 503, 504]),
     # HTTP_RETRIES_METHODES=(list, ['get', 'post', 'put', 'delete']),
-    # GDCC_API_UPDATE_PROMETHEUS_HOST=(str, 'localhost'),
-    # ALLOW_MORE_THAN_ONE=(bool, False),
     # CORS_ORIGIN_ALLOW_ALL=(bool, False),
     # CORS_ORIGIN_WHITELIST=(list, ['https://localhost:8081'])
 )
@@ -195,4 +192,5 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'secret_photo.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 # PASSWORD_RESET_TIMEOUT = 60
