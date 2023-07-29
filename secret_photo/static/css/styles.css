@@ -533,7 +533,41 @@ label:hover {
   margin-right: 600px;
   margin-bottom: 50px;
 } */
+/*-----img best,tonhom,kim in homepage---*/
+.img-center img {
+  max-width: 250px;
+  display: inline-block;
+  margin: 5px;
+  margin-top: 50%;
+  margin-bottom: 10%;
+}
+.myimg {
+  transition: transform 0.3s ease;
+}
+.myimg:hover {
+  transform: scale(1.1);
+}
+.myname {
+  font-family: 'Sniglet', cursive;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  background-image: linear-gradient(to right, #876c5b,#6f4747,#3c2626, #403232);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.myid{
+  font-family: 'Sniglet', cursive;
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 40%;
+  color: #9d613c;
+  transition: transform 0.3s ease;
+}
 
+.myname:hover {
+  transform: scale(1.1);
+}
 
 /* .main-content-container {
   margin: 0 auto;
