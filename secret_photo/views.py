@@ -7,7 +7,8 @@ from .models import (
     CookieConsent,
     PictureDescription,
     register_user,
-    reset_password
+    reset_password,
+    upload_photo
 )
 import base64
 from django.conf import settings
@@ -16,7 +17,8 @@ from .forms import (
     LoginForm,
     ForgotPasswordForm,
     ResetPasswordConfirmForm,
-    PictureDescriptionForm
+    PictureDescriptionForm,
+    PhotoGalleryForm
 )
 # from rest_framework.authentication import TokenAuthentication
 # from rest_framework.permissions import IsAuthenticated
@@ -32,6 +34,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_str as force_text
+from django.contrib.auth.decorators import login_required
 
 
 class HomeView(View):
@@ -79,19 +82,19 @@ class RegisterCreate(APIView):
                     serializer.validated_data, data['coordinates'])
                 if result:
                     return JsonResponse({
-                        'error_code': 'success',
+                        'status_code': 'success',
                         'message': 'Registered successfully.'})
                 else:
                     return JsonResponse({
-                        'error_code': 'duplicate',
+                        'status_code': 'duplicate',
                         'message': f'Email already registered.'}, status=400)
             else:
                 return JsonResponse({
-                    'error_code': 'error',
+                    'status_code': 'error',
                     'message': 'Invalid Form.'})
         except Exception as e:
             return JsonResponse({
-                'error_code': 'error',
+                'status_code': 'error',
                 'message': str(e)},  status=400)
 
 
@@ -134,17 +137,17 @@ class LoginAuthenticate(APIView):
                 if user is not None:
                     login(request, user)
                     return JsonResponse({
-                        'error_code': 'error',
+                        'status_code': 'error',
                         'message': 'User logged in.'})
             except CustomUser.DoesNotExist as e:
                 return JsonResponse({
-                    'error_code': 'error',
+                    'status_code': 'error',
                     'message': 'Invalid Email or Coordinates.'},
                     status=401)
 
         else:
             return JsonResponse({
-                'error_cdoe': 'error',
+                'status_code': 'error',
                 'message': 'Invalid Form.'}, status=400)
 
 
@@ -166,12 +169,12 @@ class ImgPreviewView(View):
                 return JsonResponse(context)
             except CustomUser.DoesNotExist as e:
                 return JsonResponse({
-                    'error_code': 'error',
+                    'status_code': 'error',
                     'message': 'Invalid Email'},
                     status=401)
         else:
             return JsonResponse({
-                'error_code': 'error',
+                'status_code': 'error',
                 'message': 'Invalid Form.'}, status=400)
 
 
@@ -216,17 +219,17 @@ class ResetPassword(APIView):
                     send_mail(subject, plain_message, from_email,
                               to_email, html_message=email_content)
                     return JsonResponse({
-                        'error_code': 'success',
+                        'status_code': 'success',
                         'message': 'Already send.'})
             except CustomUser.DoesNotExist as e:
                 return JsonResponse({
-                    'error_code': 'Error',
+                    'status_code': 'error',
                     'message': 'Invalid Email.'},
                     status=401)
 
         else:
             return JsonResponse({
-                'error_code': 'Error',
+                'status_code': 'error',
                 'message': 'Invalid Form.'}, status=400)
 
 
@@ -256,7 +259,7 @@ class ResetPasswordView(View):
             return render(request, 'secret_photo/invalid_link.html')
 
 
-class ResetPasswordConfirm(View):
+class ResetPasswordConfirm(APIView):
     form_class = ResetPasswordConfirmForm
 
     def post(self, request, uidb64, token):
@@ -289,19 +292,19 @@ class ResetPasswordConfirm(View):
                                    data['coordinates'])
                     # return redirect('password_reset_complete')
                     return JsonResponse({
-                        'error_code': 'success',
+                        'status_code': 'success',
                         'message': 'Reset password successfully.'})
                 else:
                     return JsonResponse({
-                        'error_code': 'Error',
+                        'status_code': 'error',
                         'message': 'Invalid Form.'})
             except Exception as e:
                 return JsonResponse({
-                    'error_code': 'Error',
+                    'status_code': 'error',
                     'message': str(e)},  status=400)
 
         return JsonResponse({
-            'error_code': 'invalid_link',
+            'status_code': 'invalid_link',
             'message': f'The password reset link you used is invalid or' +
             f' has expired. Please try resetting your password again.'},
             status=400)
@@ -365,3 +368,48 @@ def gallery(request):
 def picture_detail(request, image_id):
     image = get_object_or_404(PictureDescription, pk=image_id)
     return render(request, 'secret_photo/details.html', {'image': image})
+
+
+class PhotoGalleryView(View):
+    form_class = PhotoGalleryForm
+    template_name = 'secret_photo/photo_gallery.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/login/')
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+
+class PhotoGalleryUploadConfirm(View):
+    form_class = PhotoGalleryForm
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        try:
+            if form.is_valid():
+                data = request.POST
+                data_dict = {
+                    'description': data['description'],
+                    'image_data': request.FILES['img_photo']
+                }
+                serializer = serializers.PhotoGallerySerializer(
+                    data=data_dict)
+                serializer.is_valid(raise_exception=True)
+                print(serializer.validated_data)
+                upload_photo(serializer.validated_data, request.user)
+                return JsonResponse({
+                    'status_code': 'success',
+                    'message': 'Uploaded successfully.'})
+            else:
+                return JsonResponse({
+                    'status_code': 'error',
+                    'message': 'Invalid Form.'})
+        except Exception as e:
+            print(e)
+            return JsonResponse({
+                'status_code': 'error',
+                'message': str(e)},  status=400)

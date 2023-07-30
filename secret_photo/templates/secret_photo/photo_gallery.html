@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Upload a Photo</h2>
+    <form method="POST" id="upload-form">
+        {% csrf_token %}
+        <input class= "form-control" type="file" id="img_photo" name="img_photo" accept="image/*" required>
+        <span id="img_photo_size"></span>
+        <div><br></div>
+        <div class="image-container-gallery" id="image-container-gallery">
+            <img id="imagePreview" />
+        </div>
+        <br>
+        <div class="row">
+            <div><p><label>{{form.description.label}}</label></p></div>
+            <div>{{ form.description }}</div>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #ff965970; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_upload_photo">Upload</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.loader').hide();
+        $.ajaxSetup({
+          headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        });
+
+        $("#btn_upload_photo" ).click(function(event) {
+            if (!document.querySelector('form').checkValidity()) {
+              event.preventDefault();
+              Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Data',
+                text: 'Please enter the photo again.',
+                showCancelButton: true,
+                showConfirmButton: false,
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Close'
+              })
+              return;
+            }
+            Swal.fire({
+                icon: 'question',
+                title: 'Confirm Registration',
+                text: 'Do you confirm to upload your photo?',
+                showCancelButton: true,
+                showConfirmButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Close',
+                confirmButtonText: 'Confirm',
+            }).then((result) => {
+                    if (result.isConfirmed) {
+                        confirmOrder();
+                    }
+                }) 
+
+        });
+
+        function bytesToMB(bytes) {
+            var megabytes = bytes / (1024 * 1024);
+            return megabytes.toFixed(2);
+        }
+        function AlertImgSizeError(){
+            Swal.fire({
+              icon: 'warning',
+              title: 'The image file size is incorrect.',
+              text: 'Uploaded image files must not exceed 1 MB in size.',
+              showCancelButton: true,
+              showConfirmButton: false,
+              cancelButtonColor: '#d33',
+              cancelButtonText: 'Close'
+            });
+          }
+
+        $("#img_photo").on("change", function() {
+            var img_type = ['jpeg', 'jpg', 'png', 'bmp'];
+            var fileSize_MB = 0;
+            var file = this.files[0];
+              if ($.inArray($(this).val().split('.').pop().toLowerCase(), img_type) == -1) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Invalid File',
+                  text: 'Size does not exceed 1 MB file attachments can be attached .jpg only.',
+                  showCancelButton: true,
+                  showConfirmButton: false,
+                  cancelButtonColor: '#d33',
+                  cancelButtonText: 'Close'
+                });
+                $("#img_photo").val('');
+                $("#img_photo_size").text('');
+              }else{
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                  var img = new Image();
+                  img.onload = function() {
+                    var fileSize = file.size; 
+                    fileSize_MB = parseFloat(bytesToMB(fileSize));
+                    $("#img_photo_size").text("file size (" + fileSize_MB + " MB)");
+                    if(fileSize_MB > 1){
+                      AlertImgSizeError();
+                      $("#img_photo").val('');
+                      $("#img_photo_size").text('');
+                    }else{
+                        const output = document.getElementById('imagePreview');
+                        output.src = e.target.result;
+                    }
+                  };
+                  img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+              }   
+          })
+         
+        function confirmOrder(){
+            var formData = new FormData($("#upload-form")[0]);
+            $('.loader').show();
+            $.ajax({
+            url: '{% url "secret_photo:photo_gallery_upload_confirm" %}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response)
+                $('.loader').hide();
+                Swal.fire({
+                  title: 'Success',
+                  text: 'Uploaded successfully',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '{% url "secret_photo:gallery" %}'
+                    }
+                })
+            },
+            error: function(xhr, status, error) {
+                var json = JSON.parse(xhr.responseText);
+                $('.loader').hide();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please contact staff',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Close'
+                })
+                  
+                }
+            }); 
+        }
+    });
+</script>
+{% endblock %}

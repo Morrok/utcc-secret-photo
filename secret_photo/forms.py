@@ -1,7 +1,10 @@
 # app/forms.py
 
 from django import forms
-from secret_photo.models import PictureDescription
+from secret_photo.models import (
+    PictureDescription,
+    PhotoGallery
+)
 
 
 number_of_click_choice = [
@@ -55,3 +58,10 @@ class PictureDescriptionForm(forms.ModelForm):
     class Meta:
         model = PictureDescription
         fields = ['picture', 'description']
+
+
+class PhotoGalleryForm(forms.Form):
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={'placeholder': 'Add your description',
+                                     'rows': 4, 'cols': 50,
+                                     'class': 'fixed-size-textarea'}))

@@ -31,4 +31,9 @@ urlpatterns = [
     path('gallery/', views.gallery, name='gallery'),
     path('gallery/<int:image_id>/', views.picture_detail,
          name='picture_detail'),
+    path('photo_gallery/upload/', views.PhotoGalleryView.as_view(),
+         name='photo_gallery_upload'),
+    path('photo_gallery/upload_confirm/',
+         views.PhotoGalleryUploadConfirm.as_view(),
+         name='photo_gallery_upload_confirm'),
 ]
