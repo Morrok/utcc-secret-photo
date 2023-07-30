@@ -8,11 +8,11 @@
     pip install -r requirement.txt
     ```
   * create ".env" file in project directory to set environment variable for this project (can you follow in "env_example" file)
-  * running command create database table for this project: 
+  * running command to create database table for this project by: 
     ```
     python manage.py migrate secret_photo
     ```
-  * running command to crate default database table of Django Framework: 
+  * running command to crate default database table of Django Framework by: 
     ```
     python manage.py migrate
     ```
