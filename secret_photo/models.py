@@ -131,6 +131,7 @@ class CookieConsent(models.Model):
 class PhotoGallery(models.Model):
     custom_user = models.ForeignKey(
         CustomUser, blank=False, null=False, on_delete=models.CASCADE)
+    photo_key = models.CharField(max_length=33)
     image_data = models.BinaryField()
     photo_name = models.CharField(max_length=50)
     description = models.BinaryField(blank=True, null=True)
@@ -155,19 +156,21 @@ class PhotoGallery(models.Model):
     @staticmethod
     def encrypt_description(message, key):
         cipher_suite = Fernet(key)
-        return cipher_suite.encrypt(message.encode())
+        encrypted_data = cipher_suite.encrypt(message.encode())
+        return base64.b64encode(encrypted_data)
 
     @staticmethod
     def decrypt_description(message, key):
-        print(key)
         cipher_suite = Fernet(key)
-        plain_text = cipher_suite.decrypt(message)
+        encrypted_data = base64.b64decode(message)
+        plain_text = cipher_suite.decrypt(encrypted_data)
         return plain_text.decode()
 
 
 def add_photo(validated_data, user):
     photo = PhotoGallery()
     photo.custom_user = user
+    photo.photo_key = uuid.uuid4().hex
     photo.photo_name = validated_data.get('photo_name')
     photo.description = PhotoGallery().encrypt_description(
         validated_data.get('description'),
@@ -181,6 +184,10 @@ def add_photo(validated_data, user):
 
 def get_list_all_photo():
     return PhotoGallery.objects.all().order_by('-id')
+
+
+def get_photo_by_photo_key(photo_key):
+    return PhotoGallery.objects.get(photo_key=photo_key)
 
 
 class EncryptedPhoto(models.Model):

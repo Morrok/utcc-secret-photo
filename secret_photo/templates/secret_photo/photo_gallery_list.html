@@ -30,10 +30,10 @@
 <div class="gallery">
     {% for item in photo_list %}
         <div class="gallery-item">
-            <a href="{% url 'secret_photo:details' item.pk %}">
-                <img src="data:image/jpeg;base64,{{ item.image_data }}" alt="{{ item.description }}">
+            <a href="{% url 'secret_photo:photo_gallery_detail' item.photo_key %}">
+                <img src="data:image/jpeg;base64,{{ item.image_data }}" alt="">
             </a>
-            <p>{{ item.photo_name }}</p>
+            {% comment %} <p>{{ item.photo_name }}</p> {% endcomment %}
         </div>
     {% endfor %}
 </div>

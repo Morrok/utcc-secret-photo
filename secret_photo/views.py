@@ -10,7 +10,8 @@ from .models import (
     register_user,
     reset_password,
     add_photo,
-    get_list_all_photo
+    get_list_all_photo,
+    get_photo_by_photo_key
 )
 import base64
 from django.conf import settings
@@ -20,11 +21,11 @@ from .forms import (
     ForgotPasswordForm,
     ResetPasswordConfirmForm,
     PhotoUploadForm,
-    PhotoGalleryForm
+    PhotoGalleryForm,
+    PhotoGalleryDetailForm
 )
 # from rest_framework.authentication import TokenAuthentication
 # from rest_framework.permissions import IsAuthenticated
-import uuid
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
@@ -391,9 +392,9 @@ class PhotoGalleryListView(View):
                     p.image_data,
                     settings.IMAGE_SECRET_KEY.encode('utf-8'))
                 p.image_data = base64.b64encode(decrypted_data).decode('utf-8')
-            # if p.description:
-            #     p.description = PhotoGallery().decrypt_description(
-            #         p.description, settings.IMAGE_SECRET_KEY.encode('utf-8'))
+            if p.description:
+                p.description = PhotoGallery().decrypt_description(
+                    p.description, settings.IMAGE_SECRET_KEY.encode('utf-8'))
 
         return render(request, self.template_name, {'photo_list': photo_list})
 
@@ -415,15 +416,20 @@ class PhotoGalleryUploadConfirm(View):
     # permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({
+                'status_code': 'error',
+                'message': 'Unauthorized'},  status=401)
         form = self.form_class(request.POST)
 
         try:
             if form.is_valid():
                 data = request.POST
+                print(data)
                 data_dict = {
                     'photo_name': data['photo_name'],
                     'description': data['description'],
-                    'is_favorite':  data['is_favorite'],
+                    'is_favorite':  data.get('is_favorite', False),
                     'image_data': request.FILES['img_photo'],
                 }
                 serializer = serializers.PhotoGallerySerializer(
@@ -443,3 +449,34 @@ class PhotoGalleryUploadConfirm(View):
             return JsonResponse({
                 'status_code': 'error',
                 'message': str(e)},  status=400)
+
+
+class PhotoGalleryDetailView(View):
+    form_class = PhotoGalleryDetailForm
+    template_name = 'secret_photo/photo_gallery_detail.html'
+
+    def get(self, request, photo_key, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/login/')
+
+        try:
+            photo = get_photo_by_photo_key(photo_key)
+        except PhotoGallery.DoesNotExist as e:
+            return
+
+        decrypted_image = PhotoGallery().decrypt_image_data(
+            photo.image_data,
+            settings.IMAGE_SECRET_KEY.encode('utf-8'))
+        decrypted_description = PhotoGallery().decrypt_description(
+            photo.description, settings.IMAGE_SECRET_KEY.encode('utf-8'))
+        image_data = base64.b64encode(decrypted_image).decode('utf-8')
+        photo_dict = {
+            'photo_name': photo.photo_name,
+            'description': decrypted_description,
+            'is_favorite': photo.is_favorite
+        }
+        form = self.form_class(photo_dict)
+        return render(request, self.template_name,
+                      {'form': form,
+                       'photo_key': photo.photo_key,
+                       'image_data': image_data})

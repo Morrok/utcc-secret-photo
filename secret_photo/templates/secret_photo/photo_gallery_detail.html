@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <h2 class="headtext">Upload a Photo</h2>
-    <form method="POST" id="upload-form">
+    <h2 class="headtext">Photo Detail</h2>
+    <form method="POST" id="detail-form">
         {% csrf_token %}
         <div class="row">
             <div class="col-sm">
-                <div><p><label>{{form.photo_name.label}}<span class="required-star">*</span></label></p></div>
+                <div><p><label>{{form.photo_name.label}}</label></p></div>
             </div>
             <div class="col-sm">
                 <div>{{ form.photo_name }}</div>
@@ -15,12 +15,10 @@
             </div>
         </div>
         <div><br></div>
-        <div><label>Upload Photo <span class="required-star">*</span></label></div>
-        <input class= "form-control" type="file" id="img_photo" name="img_photo" accept="image/*" required>
-        <span id="img_photo_size"></span>
+        <div><label>The Photo</label></div>
         <div><br></div>
         <div class="image-container-gallery" id="image-container-gallery">
-            <img id="imagePreview" />
+            <img src="data:image/jpeg;base64,{{ image_data }}">
         </div>
         <br>
         <div class="row">
@@ -45,8 +43,9 @@
             <div><label>{{form.description.label}}</label></div>
             <div>{{ form.description }}</div>
         </div>
-        <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #ff965970; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_upload_photo">Upload</button>
-    </form>
+        {% comment %} <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #ff965970; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_upload_photo">Upload</button> {% endcomment %}
+        <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #ff965970; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" onclick="window.location='{% url 'secret_photo:photo_gallery_list' %}'; return false;" id="btn_photo_back">Back</button>
+      </form>
 </div>
 
 <script>
@@ -87,61 +86,6 @@
                 }) 
 
         });
-
-        function bytesToMB(bytes) {
-            var megabytes = bytes / (1024 * 1024);
-            return megabytes.toFixed(2);
-        }
-        function AlertImgSizeError(){
-            Swal.fire({
-              icon: 'warning',
-              title: 'The image file size is incorrect.',
-              text: 'Uploaded image files must not exceed 1 MB in size.',
-              showCancelButton: true,
-              showConfirmButton: false,
-              cancelButtonColor: '#d33',
-              cancelButtonText: 'Close'
-            });
-          }
-
-        $("#img_photo").on("change", function() {
-            var img_type = ['jpeg', 'jpg', 'png', 'bmp'];
-            var fileSize_MB = 0;
-            var file = this.files[0];
-              if ($.inArray($(this).val().split('.').pop().toLowerCase(), img_type) == -1) {
-                Swal.fire({
-                  icon: 'warning',
-                  title: 'Invalid File',
-                  text: 'Size does not exceed 1 MB file attachments can be attached .jpg only.',
-                  showCancelButton: true,
-                  showConfirmButton: false,
-                  cancelButtonColor: '#d33',
-                  cancelButtonText: 'Close'
-                });
-                $("#img_photo").val('');
-                $("#img_photo_size").text('');
-              }else{
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                  var img = new Image();
-                  img.onload = function() {
-                    var fileSize = file.size; 
-                    fileSize_MB = parseFloat(bytesToMB(fileSize));
-                    $("#img_photo_size").text("file size (" + fileSize_MB + " MB)");
-                    if(fileSize_MB > 1){
-                      AlertImgSizeError();
-                      $("#img_photo").val('');
-                      $("#img_photo_size").text('');
-                    }else{
-                        const output = document.getElementById('imagePreview');
-                        output.src = e.target.result;
-                    }
-                  };
-                  img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-              }   
-          })
          
         function confirmOrder(){
             var formData = new FormData($("#upload-form")[0]);
