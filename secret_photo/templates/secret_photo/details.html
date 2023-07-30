@@ -6,10 +6,13 @@
     <title>Picture Detail</title>
 </head>
 <body>
-    <h1 class="headtext">Picture Detail</h1>
-    <div class="gallery-item">
-        <img src="{{ image.picture.url }}" alt="Picture">
-        <p class="detail_text">{{ image.description }}</p>
+    <div class="photo-detail-container">
+        <h1>Photo Detail</h1>
+        <div class="photo-frame">
+            <img src="data:image/jpeg;base64,{{ photo.encrypted_image }}" alt="{{ photo.description }}">
+        </div>
+        <p>{{ photo.description }}</p>
+        <!-- Add any additional details here -->
     </div>
 </body>
 </html>

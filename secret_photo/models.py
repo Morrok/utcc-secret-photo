@@ -128,11 +128,6 @@ class CookieConsent(models.Model):
         return f'{self.user.username} - {self.consent_given}'
 
 
-class PictureDescription(models.Model):
-    picture = models.ImageField(upload_to='uploads/')
-    description = models.TextField()
-
-
 class PhotoGallery(models.Model):
     custom_user = models.ForeignKey(
         CustomUser, blank=False, null=False, on_delete=models.CASCADE)
@@ -178,3 +173,8 @@ def upload_photo(validated_data, user):
         validated_data.get('image_data'),
         settings.AUTHEN_SECRET_KEY.encode('utf-8'))
     photo.save()
+
+
+class EncryptedPhoto(models.Model):
+    encrypted_image = models.BinaryField()
+    description = models.TextField(blank=True, null=True)

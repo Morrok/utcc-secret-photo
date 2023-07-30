@@ -5,7 +5,7 @@ import json
 from .models import (
     CustomUser,
     CookieConsent,
-    PictureDescription,
+    EncryptedPhoto,
     register_user,
     reset_password,
     upload_photo
@@ -17,7 +17,7 @@ from .forms import (
     LoginForm,
     ForgotPasswordForm,
     ResetPasswordConfirmForm,
-    PictureDescriptionForm,
+    PhotoUploadForm,
     PhotoGalleryForm
 )
 # from rest_framework.authentication import TokenAuthentication
@@ -35,6 +35,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_str as force_text
 from django.contrib.auth.decorators import login_required
+from .utils.cryptocraphy import encrypt_photo, decrypt_photo
 
 
 class HomeView(View):
@@ -334,40 +335,42 @@ def give_consent(request):
     return HttpResponse("Consent given successfully.")
 
 
-def addphoto(request):
-    return render(request, 'secret_photo/addphoto.html')
+def gallery(request):
+    all_data = EncryptedPhoto.objects.all().order_by('-id')
+    key = settings.IMAGE_SECRET_KEY.encode('utf-8')
+
+    decrypted_data = []
+    for data in all_data:
+        decrypted_image = decrypt_photo(data.encrypted_image, key)
+        decrypted_data.append(
+            {'image': decrypted_image, 'description': data.description, 'pk': data.pk})
+
+    return render(request, 'secret_photo/gallery.html', {'data': decrypted_data})
 
 
-# def gallery(request):
-#     return render(request, 'secret_photo/gallery.html')
-
-
-def picture_description_view(request):
+def upload_photo(request):
     if request.method == 'POST':
-        form = PictureDescriptionForm(request.POST, request.FILES)
+        form = PhotoUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            image = form.cleaned_data['picture']
+            photo = form.cleaned_data['photo']
             description = form.cleaned_data['description']
-            new_image = PictureDescription(
-                picture=image, description=description)
-            new_image.save()
-
+            key = settings.IMAGE_SECRET_KEY.encode('utf-8')
+            encrypted_photo = encrypt_photo(photo.read(), key)
+            encrypted_photo_instance = EncryptedPhoto(
+                encrypted_image=bytes(encrypted_photo),  # Convert to bytes
+                description=description
+            )
+            encrypted_photo_instance.save()
             return HttpResponseRedirect('/gallery')
     else:
-        form = PictureDescriptionForm()
-    # Check the template name here
-    return render(request, 'secret_photo/picture_description.html',
-                  {'form': form})
+        form = PhotoUploadForm()
+
+    return render(request, 'secret_photo/picture_description.html', {'form': form})
 
 
-def gallery(request):
-    all_data = PictureDescription.objects.all().order_by('-id')
-    return render(request, 'secret_photo/gallery.html', {'data': all_data})
-
-
-def picture_detail(request, image_id):
-    image = get_object_or_404(PictureDescription, pk=image_id)
-    return render(request, 'secret_photo/details.html', {'image': image})
+def photo_detail(request, pk):
+    photo = get_object_or_404(EncryptedPhoto, pk=pk)
+    return render(request, 'secret_photo/details.html', {'photo': photo})
 
 
 class PhotoGalleryView(View):
