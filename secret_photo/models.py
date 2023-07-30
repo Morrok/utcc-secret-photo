@@ -128,6 +128,61 @@ class CookieConsent(models.Model):
         return f'{self.user.username} - {self.consent_given}'
 
 
-class PictureDescription(models.Model):
-    picture = models.ImageField(upload_to='uploads/')
-    description = models.TextField()
+class PhotoGallery(models.Model):
+    custom_user = models.ForeignKey(
+        CustomUser, blank=False, null=False, on_delete=models.CASCADE)
+    image_data = models.BinaryField()
+    photo_name = models.CharField(max_length=50)
+    description = models.BinaryField(blank=True, null=True)
+    is_favorite = models.BooleanField(default=False)
+    date_updated = models.DateTimeField(null=True)
+    date_uploaded = models.DateTimeField(default=timezone.now)
+
+    @staticmethod
+    def encrypt_image_data(image_file, key):
+        fernet = Fernet(key)
+        image_data = image_file.read()
+        encrypted_data = fernet.encrypt(image_data)
+        return base64.b64encode(encrypted_data)
+
+    @staticmethod
+    def decrypt_image_data(encrypted_data_base64, key):
+        fernet = Fernet(key)
+        encrypted_data = base64.b64decode(encrypted_data_base64)
+        image_data = fernet.decrypt(encrypted_data)
+        return image_data
+
+    @staticmethod
+    def encrypt_description(message, key):
+        cipher_suite = Fernet(key)
+        return cipher_suite.encrypt(message.encode())
+
+    @staticmethod
+    def decrypt_description(message, key):
+        print(key)
+        cipher_suite = Fernet(key)
+        plain_text = cipher_suite.decrypt(message)
+        return plain_text.decode()
+
+
+def add_photo(validated_data, user):
+    photo = PhotoGallery()
+    photo.custom_user = user
+    photo.photo_name = validated_data.get('photo_name')
+    photo.description = PhotoGallery().encrypt_description(
+        validated_data.get('description'),
+        settings.IMAGE_SECRET_KEY.encode('utf-8'))
+    photo.image_data = PhotoGallery().encrypt_image_data(
+        validated_data.get('image_data'),
+        settings.IMAGE_SECRET_KEY.encode('utf-8'))
+    photo.is_favorite = validated_data.get('is_favorite')
+    photo.save()
+
+
+def get_list_all_photo():
+    return PhotoGallery.objects.all().order_by('-id')
+
+
+class EncryptedPhoto(models.Model):
+    encrypted_image = models.BinaryField()
+    description = models.TextField(blank=True, null=True)

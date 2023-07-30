@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="headtext" >Your Gallery</h1>
+<style>
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        font-family: 'Sniglet', cursive;
+    }
+
+    .gallery-item {
+        border: 2px solid #b8a49a;
+        padding: 10px;
+        /* Set fixed width and height for each image */
+        width: 250px;
+        height: 250px;
+        overflow: hidden; /* Hide any overflowing content to maintain uniform size */
+    }
+
+    .gallery-item img {
+        width: 100%; /* Ensure the image fills the container */
+        height: 100%; /* Ensure the image fills the container */
+        object-fit: cover;
+    }
+</style>
+<div class="addpic-center">
+<a href="{% url 'secret_photo:photo_gallery_upload' %}" class="addpic">+</a>
+</div>
+<div class="gallery">
+    {% for item in photo_list %}
+        <div class="gallery-item">
+            <a href="{% url 'secret_photo:details' item.pk %}">
+                <img src="data:image/jpeg;base64,{{ item.image_data }}" alt="{{ item.description }}">
+            </a>
+            <p>{{ item.photo_name }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

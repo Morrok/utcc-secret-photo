@@ -1,24 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Upload Picture and Description</title>
-</head>
-<body>
     <h1>Upload Picture and Description</h1>
-    <form method="post" enctype="multipart/form-data">
+    <form id="picture-description-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <!-- File input -->
-        <input type="file" id="picture-input" name="picture" accept="image/*" onchange="previewImage(event)" />
 
+        <input type="file" id="picture-input" name="photo" accept="image/*" onchange="previewImage(event)">
         <br>
-        <!-- Image preview -->
-        <div id="image-preview-container" style="display: none;">
-            <img id="image-preview" src="#" alt="Preview" style="max-height: 200px;">
-        </div>
+        <img id="picture-preview" src="#" alt="Preview" style="max-width: 200px; display: none;">
         <br>
+
+
         {{ form.description }}
+        
         <br>
         {{ form.errors }}
         <button type="submit">Submit</button>
@@ -27,21 +21,19 @@
 
     <script>
         function previewImage(event) {
-            const imagePreview = document.getElementById('image-preview');
-            const imageContainer = document.getElementById('image-preview-container');
-
-            if (event.target.files && event.target.files[0]) {
+            const pictureInput = event.target;
+            const picturePreview = document.getElementById('picture-preview');
+            
+            if (pictureInput.files && pictureInput.files[0]) {
                 const reader = new FileReader();
-
                 reader.onload = function (e) {
-                    imagePreview.src = e.target.result;
+                    picturePreview.src = e.target.result;
+                    picturePreview.style.display = 'block';
                 };
-
-                reader.readAsDataURL(event.target.files[0]);
-                imageContainer.style.display = 'block';
+                reader.readAsDataURL(pictureInput.files[0]);
             } else {
-                imagePreview.src = '#';
-                imageContainer.style.display = 'none';
+                picturePreview.src = '#';
+                picturePreview.style.display = 'none';
             }
         }
 
@@ -59,8 +51,5 @@
             imageContainer.style.display = 'none';
         }
     </script>
-</body>
-</html>
-
 
 {% endblock %}

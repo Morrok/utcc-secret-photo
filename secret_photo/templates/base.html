@@ -11,6 +11,7 @@
         {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> {% endcomment %}
 
         <script src="{%static 'bootstrap-5.3.0-dist/js/bootstrap.js' %}"></script>
+        <script src="{%static 'jquery/jquery.min.js' %}"></script>
         <link href="{%static 'sweetalert/sweetalert2.min.css' %}" rel="stylesheet">
         <script src="{%static 'sweetalert/sweetalert2.all.min.js' %}"></script>
         {% comment %} <link href="{%static 'bootstrap-5.3.0-dist/js/bootstrap.js' %}" rel="stylesheet"> {% endcomment %}
@@ -56,7 +57,7 @@
             <a class="nav-link active" aria-current="page" href="{% url 'secret_photo:homepage' %}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'secret_photo:gallery' %}">Gallery</a>
+            <a class="nav-link" href="{% url 'secret_photo:photo_gallery_list' %}">Gallery</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">support</a>

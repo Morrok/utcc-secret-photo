@@ -1,8 +1,6 @@
 # app/forms.py
 
 from django import forms
-from secret_photo.models import PictureDescription
-
 
 number_of_click_choice = [
     ('4', '4'),
@@ -51,7 +49,21 @@ class ResetPasswordConfirmForm(forms.Form):
     )
 
 
-class PictureDescriptionForm(forms.ModelForm):
-    class Meta:
-        model = PictureDescription
-        fields = ['picture', 'description']
+class PhotoUploadForm(forms.Form):
+    photo = forms.ImageField()
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3}), required=False)
+
+
+class PhotoGalleryForm(forms.Form):
+    photo_name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'Add your Photo Name',
+                                      'size': '50'}))
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={'placeholder': 'Add your description',
+                                     'rows': 4, 'cols': 50,
+                                     'class': 'fixed-size-textarea'}),
+        required=False)
+    is_favorite = forms.BooleanField(required=False, label='Favorite',
+                                     widget=forms.CheckboxInput(
+                                         attrs={'style': 'margin-top: 9px'}))

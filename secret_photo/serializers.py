@@ -14,5 +14,12 @@ class CustomUserSerializer(serializers.Serializer):
         return value
 
 
+class PhotoGallerySerializer(serializers.Serializer):
+    photo_name = serializers.CharField()
+    description = serializers.CharField()
+    image_data = serializers.FileField()
+    is_favorite = serializers.BooleanField()
+
+
 def validations(request_data):
     return

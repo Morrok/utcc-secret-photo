@@ -19,11 +19,16 @@
         .gallery-item {
             border: 2px solid #b8a49a;
             padding: 10px;
+            /* Set fixed width and height for each image */
+            width: 250px;
+            height: 250px;
+            overflow: hidden; /* Hide any overflowing content to maintain uniform size */
         }
 
         .gallery-item img {
-            max-width: 100%;
-            height: auto;
+            width: 100%; /* Ensure the image fills the container */
+            height: 100%; /* Ensure the image fills the container */
+            object-fit: cover;
         }
     </style>
     <div class="addpic-center">
@@ -32,8 +37,8 @@
     <div class="gallery">
         {% for item in data %}
             <div class="gallery-item">
-                <a href="{% url 'secret_photo:picture_detail' item.pk %}">
-                    <img src="{{ item.picture }}" alt="Picture">
+                <a href="{% url 'secret_photo:details' item.pk %}">
+                    <img src="data:image/jpeg;base64,{{ item.encrypted_image }}" alt="{{ item.description }}">
                 </a>
                 <p>{{ item.description }}</p>
             </div>
