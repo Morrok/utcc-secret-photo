@@ -128,6 +128,6 @@ class CookieConsent(models.Model):
         return f'{self.user.username} - {self.consent_given}'
 
 
-class PictureDescription(models.Model):
-    picture = models.ImageField(upload_to='uploads/')
-    description = models.TextField()
+class EncryptedPhoto(models.Model):
+    encrypted_image = models.BinaryField()
+    description = models.TextField(blank=True, null=True)

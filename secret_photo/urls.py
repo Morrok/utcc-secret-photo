@@ -26,9 +26,8 @@ urlpatterns = [
          views.ResetPasswordConfirm.as_view(), name='reset_password_confirm'),
     path('popup/', views.cookie_popup, name='popup'),
     path('give_consent/', views.give_consent, name='give_consent'),
-    path('upload/', views.picture_description_view,
+    path('upload/', views.upload_photo,
          name='upload'),
     path('gallery/', views.gallery, name='gallery'),
-    path('gallery/<int:image_id>/', views.picture_detail,
-         name='picture_detail'),
+    path('detail/<int:pk>/', views.photo_detail, name='details'),
 ]
