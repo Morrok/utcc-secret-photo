@@ -33,7 +33,6 @@
             <a href="{% url 'secret_photo:photo_gallery_detail' item.photo_key %}">
                 <img src="data:image/jpeg;base64,{{ item.image_data }}" alt="">
             </a>
-            {% comment %} <p>{{ item.photo_name }}</p> {% endcomment %}
         </div>
     {% endfor %}
 </div>

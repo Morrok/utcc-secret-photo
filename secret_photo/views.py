@@ -425,7 +425,6 @@ class PhotoGalleryUploadConfirm(View):
         try:
             if form.is_valid():
                 data = request.POST
-                print(data)
                 data_dict = {
                     'photo_name': data['photo_name'],
                     'description': data['description'],
@@ -435,7 +434,6 @@ class PhotoGalleryUploadConfirm(View):
                 serializer = serializers.PhotoGallerySerializer(
                     data=data_dict)
                 serializer.is_valid(raise_exception=True)
-                print(serializer.validated_data)
                 add_photo(serializer.validated_data, request.user)
                 return JsonResponse({
                     'status_code': 'success',
@@ -445,7 +443,6 @@ class PhotoGalleryUploadConfirm(View):
                     'status_code': 'error',
                     'message': 'Invalid Form.'})
         except Exception as e:
-            print(e)
             return JsonResponse({
                 'status_code': 'error',
                 'message': str(e)},  status=400)

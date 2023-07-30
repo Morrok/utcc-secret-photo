@@ -27,14 +27,6 @@ env_schema = dict(
     WEB_PROTOCAL=(str, 'http'),
     WEB_DOMAIN_NAME=(str, 'localhost:8000'),
     IMAGE_SECRET_KEY=(str, 'yqiLYf3TF44eJGUkF7adm0K8pWs9iKg62FI6Wkmj0to=')
-    # HTTP Retry
-    # HTTP_RETRIES_MAX_REQUESTS=(int, 15),
-    # HTTP_RETRIES_MAX_REQUESTS_BPMN_SLOWNESS=(int, 5),
-    # HTTP_RETRIES_BACKOFF_FACTOR=(float, 0.2),
-    # HTTP_RETRIES_STATUS_CODE=(list, [502, 503, 504]),
-    # HTTP_RETRIES_METHODES=(list, ['get', 'post', 'put', 'delete']),
-    # CORS_ORIGIN_ALLOW_ALL=(bool, False),
-    # CORS_ORIGIN_WHITELIST=(list, ['https://localhost:8081'])
 )
 
 root = environ.Path(__file__) - 3
@@ -46,9 +38,6 @@ for key in env_schema:
     exec("{} = env('{}')".format(key, key))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
-# BASE_DIR = os.path.dirname(
-#     os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -79,7 +68,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_bootstrap5',
     'secret_photo'
-    # 'secret_photo.apps.SecretPhotoConfig',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +94,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'secret_photo.views.base_html',
             ],
         },
     },
@@ -173,8 +160,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -193,5 +178,4 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'secret_photo.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 PASSWORD_RESET_TIMEOUT = 300

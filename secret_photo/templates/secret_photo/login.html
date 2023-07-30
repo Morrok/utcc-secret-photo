@@ -25,7 +25,6 @@
     <div>{{ form.email }}</div>
     <label id="number_of_click"></label>
     <br>
-    <!-- <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #eec0a670; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_img_preview">Photo Preview</button> -->
     <div class="button-container">
         <button type="button" class="button" id="btn_img_preview">
           <span class="button__text">View Photo Password</span>
@@ -35,12 +34,10 @@
     <div class="image-container" id="image-container">
         <img id="imagePreview">
         <div class="overlay" id="overlay">
-            <!-- Click areas will be dynamically added here -->
         </div>
     </div>
     <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #ff965970; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_login">Login</button>
     <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #ffd0b770; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(252, 218, 164);--bs-btn-hover-border-color: rgb(255, 207, 111);--bs-btn-active-bg: #ff9232;--bs-btn-active-border-color: #ffc02e;--bs-btn-disabled-bg: rgb(255, 169, 56);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_forgot_password" onclick="window.location='{% url 'secret_photo:forget_password' %}'; return false;">Forgot Password</button>
-    {% comment %} <input type="submit" value="Submit" /> {% endcomment %}
 </form>
 <div class="loader">
 
@@ -65,9 +62,6 @@
           headers: { "X-CSRFToken": "{{ csrf_token }}" }
         });
 
-        //var clickedCoordinates = [];
-        
-        // Define the size of the zones (in pixels)
         var zoneSize = 50;
         var clickedZones = [];
          
@@ -119,20 +113,6 @@
 
             // Store the clicked zone
             clickedZones.push([zoneX, zoneY]);
-
-            
-            console.log(clickedZones)
-                
-            // Store the clicked coordinates
-            //clickedCoordinates.push({ x: x, y: y });
-
-            // Add a visual indicator for the clicked area
-            //var clickArea = $('<div class="click-area"></div>').css({
-            //    top: y - 10,
-            //    left: x - 10,
-            //    width: 20, // Adjust as needed
-            //    height: 20, // Adjust as needed
-            //});
             var clickArea = $('<div class="click-area"></div>').css({
                 top: zoneY * zoneSize,
                 left: zoneX * zoneSize,
@@ -204,10 +184,7 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(response)
                 $('.loader').hide();
-                //var host = response.gdcc_host
-                //var orderId = response.order_id
                 window.location.href = '{% url "secret_photo:homepage" %}'
             },
             error: function(xhr, status, error) {
@@ -251,7 +228,6 @@
             dataType: 'json',
             data: {email: email},
             success: function (response) {
-                console.log(response)
                 var imageUrl = 'data:image/png;base64,' + response.img64;
                 $('#imagePreview').attr('src', imageUrl);
                 var textLabel = "Number of Click: "+response.number_of_click
