@@ -8,7 +8,7 @@ from .models import (
     EncryptedPhoto,
     register_user,
     reset_password,
-    upload_photo
+    add_photo
 )
 import base64
 from django.conf import settings
@@ -343,9 +343,11 @@ def gallery(request):
     for data in all_data:
         decrypted_image = decrypt_photo(data.encrypted_image, key)
         decrypted_data.append(
-            {'image': decrypted_image, 'description': data.description, 'pk': data.pk})
+            {'image': decrypted_image, 'description': data.description,
+             'pk': data.pk})
 
-    return render(request, 'secret_photo/gallery.html', {'data': decrypted_data})
+    return render(request,
+                  'secret_photo/gallery.html', {'data': decrypted_data})
 
 
 def upload_photo(request):
@@ -365,7 +367,8 @@ def upload_photo(request):
     else:
         form = PhotoUploadForm()
 
-    return render(request, 'secret_photo/picture_description.html', {'form': form})
+    return render(request, 'secret_photo/picture_description.html',
+                  {'form': form})
 
 
 def photo_detail(request, pk):
@@ -403,7 +406,7 @@ class PhotoGalleryUploadConfirm(View):
                     data=data_dict)
                 serializer.is_valid(raise_exception=True)
                 print(serializer.validated_data)
-                upload_photo(serializer.validated_data, request.user)
+                add_photo(serializer.validated_data, request.user)
                 return JsonResponse({
                     'status_code': 'success',
                     'message': 'Uploaded successfully.'})

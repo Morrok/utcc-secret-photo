@@ -1,9 +1,6 @@
 # app/forms.py
 
 from django import forms
-from secret_photo.models import (
-    PhotoGallery
-)
 
 number_of_click_choice = [
     ('4', '4'),

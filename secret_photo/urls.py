@@ -28,7 +28,7 @@ urlpatterns = [
     path('give_consent/', views.give_consent, name='give_consent'),
     path('upload/', views.upload_photo, name='upload'),
     path('gallery/', views.gallery, name='gallery'),
-    path('gallery/<int:image_id>/', views.picture_detail,
+    path('gallery/<int:image_id>/', views.photo_detail,
          name='picture_detail'),
     path('detail/<int:pk>/', views.photo_detail, name='details'),
     path('photo_gallery/upload/', views.PhotoGalleryView.as_view(),

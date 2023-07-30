@@ -163,15 +163,15 @@ class PhotoGallery(models.Model):
         return plain_text.decode()
 
 
-def upload_photo(validated_data, user):
+def add_photo(validated_data, user):
     photo = PhotoGallery()
     photo.custom_user = user
     photo.description = PhotoGallery().encrypt_description(
         validated_data.get('description'),
-        settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+        settings.IMAGE_SECRET_KEY.encode('utf-8'))
     photo.image_data = PhotoGallery().encrypt_image_data(
         validated_data.get('image_data'),
-        settings.AUTHEN_SECRET_KEY.encode('utf-8'))
+        settings.IMAGE_SECRET_KEY.encode('utf-8'))
     photo.save()
 
 
