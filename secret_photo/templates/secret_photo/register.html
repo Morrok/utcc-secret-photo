@@ -21,8 +21,12 @@
   </div>
 
     {% csrf_token %}
-    {{ form.as_p }}
-    <input class= "form-control" type="file" id="img_photo" name="img_photo" accept="image/*" required>
+    <div><label>{{form.email.label}}<span class="required-star">*</span></label></div>
+    <div>{{ form.email }}</div>
+    <div><label>{{form.number_of_click.label}}<span class="required-star">*</span></label></div>
+    <div>{{ form.number_of_click }}</div>
+    <div><label>Upload Photo <span class="required-star">*</span></label></div>
+    <div><input class= "form-control" type="file" id="img_photo" name="img_photo" accept="image/*" required></div>
     <span id="img_photo_size"></span>
     <div><br></div>
     <div class="image-container" id="image-container">

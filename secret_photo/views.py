@@ -6,9 +6,11 @@ from .models import (
     CustomUser,
     CookieConsent,
     EncryptedPhoto,
+    PhotoGallery,
     register_user,
     reset_password,
-    add_photo
+    add_photo,
+    get_list_all_photo
 )
 import base64
 from django.conf import settings
@@ -376,6 +378,26 @@ def photo_detail(request, pk):
     return render(request, 'secret_photo/details.html', {'photo': photo})
 
 
+class PhotoGalleryListView(View):
+    template_name = 'secret_photo/photo_gallery_list.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/login/')
+        photo_list = get_list_all_photo()
+        for p in photo_list:
+            if p.image_data:
+                decrypted_data = PhotoGallery().decrypt_image_data(
+                    p.image_data,
+                    settings.IMAGE_SECRET_KEY.encode('utf-8'))
+                p.image_data = base64.b64encode(decrypted_data).decode('utf-8')
+            # if p.description:
+            #     p.description = PhotoGallery().decrypt_description(
+            #         p.description, settings.IMAGE_SECRET_KEY.encode('utf-8'))
+
+        return render(request, self.template_name, {'photo_list': photo_list})
+
+
 class PhotoGalleryView(View):
     form_class = PhotoGalleryForm
     template_name = 'secret_photo/photo_gallery.html'
@@ -399,8 +421,10 @@ class PhotoGalleryUploadConfirm(View):
             if form.is_valid():
                 data = request.POST
                 data_dict = {
+                    'photo_name': data['photo_name'],
                     'description': data['description'],
-                    'image_data': request.FILES['img_photo']
+                    'is_favorite':  data['is_favorite'],
+                    'image_data': request.FILES['img_photo'],
                 }
                 serializer = serializers.PhotoGallerySerializer(
                     data=data_dict)

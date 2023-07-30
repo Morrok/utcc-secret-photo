@@ -132,7 +132,8 @@ class PhotoGallery(models.Model):
     custom_user = models.ForeignKey(
         CustomUser, blank=False, null=False, on_delete=models.CASCADE)
     image_data = models.BinaryField()
-    description = models.BinaryField(null=True)
+    photo_name = models.CharField(max_length=50)
+    description = models.BinaryField(blank=True, null=True)
     is_favorite = models.BooleanField(default=False)
     date_updated = models.DateTimeField(null=True)
     date_uploaded = models.DateTimeField(default=timezone.now)
@@ -158,6 +159,7 @@ class PhotoGallery(models.Model):
 
     @staticmethod
     def decrypt_description(message, key):
+        print(key)
         cipher_suite = Fernet(key)
         plain_text = cipher_suite.decrypt(message)
         return plain_text.decode()
@@ -166,13 +168,19 @@ class PhotoGallery(models.Model):
 def add_photo(validated_data, user):
     photo = PhotoGallery()
     photo.custom_user = user
+    photo.photo_name = validated_data.get('photo_name')
     photo.description = PhotoGallery().encrypt_description(
         validated_data.get('description'),
         settings.IMAGE_SECRET_KEY.encode('utf-8'))
     photo.image_data = PhotoGallery().encrypt_image_data(
         validated_data.get('image_data'),
         settings.IMAGE_SECRET_KEY.encode('utf-8'))
+    photo.is_favorite = validated_data.get('is_favorite')
     photo.save()
+
+
+def get_list_all_photo():
+    return PhotoGallery.objects.all().order_by('-id')
 
 
 class EncryptedPhoto(models.Model):

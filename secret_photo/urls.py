@@ -31,6 +31,8 @@ urlpatterns = [
     path('gallery/<int:image_id>/', views.photo_detail,
          name='picture_detail'),
     path('detail/<int:pk>/', views.photo_detail, name='details'),
+    path('photo_gallery/list/', views.PhotoGalleryListView.as_view(),
+         name='photo_gallery_list'),
     path('photo_gallery/upload/', views.PhotoGalleryView.as_view(),
          name='photo_gallery_upload'),
     path('photo_gallery/upload_confirm/',

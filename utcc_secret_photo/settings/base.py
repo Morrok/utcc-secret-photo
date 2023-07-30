@@ -194,4 +194,4 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'secret_photo.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
-PASSWORD_RESET_TIMEOUT = 60
+# PASSWORD_RESET_TIMEOUT = 60

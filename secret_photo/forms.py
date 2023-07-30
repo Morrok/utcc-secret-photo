@@ -56,7 +56,14 @@ class PhotoUploadForm(forms.Form):
 
 
 class PhotoGalleryForm(forms.Form):
+    photo_name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'Add your Photo Name',
+                                      'size': '50'}))
     description = forms.CharField(
         widget=forms.Textarea(attrs={'placeholder': 'Add your description',
                                      'rows': 4, 'cols': 50,
-                                     'class': 'fixed-size-textarea'}))
+                                     'class': 'fixed-size-textarea'}),
+        required=False)
+    is_favorite = forms.BooleanField(required=False, label='Favorite',
+                                     widget=forms.CheckboxInput(
+                                         attrs={'style': 'margin-top: 9px'}))

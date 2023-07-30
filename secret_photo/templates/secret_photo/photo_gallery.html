@@ -4,6 +4,18 @@
     <h2>Upload a Photo</h2>
     <form method="POST" id="upload-form">
         {% csrf_token %}
+        <div class="row">
+            <div class="col-sm">
+                <div><p><label>{{form.photo_name.label}}<span class="required-star">*</span></label></p></div>
+            </div>
+            <div class="col-sm">
+                <div>{{ form.photo_name }}</div>
+            </div>
+            <div class="col-sm">
+            </div>
+        </div>
+        <div><br></div>
+        <div><label>Upload Photo <span class="required-star">*</span></label></div>
         <input class= "form-control" type="file" id="img_photo" name="img_photo" accept="image/*" required>
         <span id="img_photo_size"></span>
         <div><br></div>
@@ -12,7 +24,25 @@
         </div>
         <br>
         <div class="row">
-            <div><p><label>{{form.description.label}}</label></p></div>
+            <div class="col-sm">
+                <div><p><label>{{form.is_favorite.label}}</label></p></div>
+            </div>
+            <div class="col-sm">
+                <div>{{ form.is_favorite }}</div>
+            </div>
+            <div class="col-sm">
+            </div>
+            <div class="col-sm">
+            </div>
+            <div class="col-sm">
+            </div>
+            <div class="col-sm">
+            </div>
+            <div class="col-sm">
+            </div>
+        </div>
+        <div class="row">
+            <div><label>{{form.description.label}}</label></div>
             <div>{{ form.description }}</div>
         </div>
         <button type="button" class="btn btn-primary btn-lg" style="margin-right: 30px; margin-top: 30px; border-radius: 59px; color: rgb(68, 42, 42); --bs-btn-bg: #ff965970; --bs-btn-border-color: antiquewhite;--bs-btn-hover-bg: rgb(145, 116, 109);--bs-btn-hover-border-color: rgb(155, 123, 123);--bs-btn-active-bg: #c0754f;--bs-btn-active-border-color: #fb7659;--bs-btn-disabled-bg: rgb(145, 116, 109);--bs-btn-disabled-border-color: rgb(123, 79, 66);" id="btn_upload_photo">Upload</button>
@@ -32,7 +62,7 @@
               Swal.fire({
                 icon: 'warning',
                 title: 'Invalid Data',
-                text: 'Please enter the photo again.',
+                text: 'Please enter the full detail and upload again.',
                 showCancelButton: true,
                 showConfirmButton: false,
                 cancelButtonColor: '#d33',
@@ -132,7 +162,7 @@
                   confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '{% url "secret_photo:gallery" %}'
+                        window.location.href = '{% url "secret_photo:photo_gallery_list" %}'
                     }
                 })
             },
