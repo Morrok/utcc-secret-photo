@@ -11,7 +11,8 @@ from .models import (
     reset_password,
     add_photo,
     get_list_all_photo,
-    get_photo_by_photo_key
+    get_photo_by_photo_key,
+    reset_login_failed_attempts
 )
 import base64
 from django.conf import settings
@@ -126,6 +127,7 @@ class LoginAuthenticate(APIView):
     # permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        limit_attempts = settings.LIMIT_LOGIN_FAILED_ATTEMPTS
         custom_user = get_user_model()
         form = self.form_class(request.POST)
         data = request.POST
@@ -136,10 +138,42 @@ class LoginAuthenticate(APIView):
                     coordinates, key=lambda item: (item[0], item[1]))
                 coordinates = json.dumps(sorted_data)
                 password = CustomUser().get_click_coordinates_hash(coordinates)
-                user = custom_user.objects.get(
-                    email=data['email'], password=password)
+                user = custom_user.objects.get(email=data['email'])
+                if user.password != password:
+                    user.failed_login_attempts += 1
+                    if user.failed_login_attempts <= limit_attempts:
+                        user.save()
+                        return JsonResponse({
+                            'status_code': 'failed_login',
+                            'message': 'Invalid Coordinates.'
+                            + f' You have'
+                            + f' {limit_attempts - user.failed_login_attempts}'
+                            + f' attempts remaining to log in successfully.'
+                            + f' After {limit_attempts} failed attempts,'
+                            + f' your account will be'
+                            + f' temporarily locked as a safety measure.'},
+                            status=401)
+                    else:
+                        return JsonResponse({
+                            'status_code': 'too_many_failed_login_attempts',
+                            'message': f'Invalid Coordinates.'
+                            + f' Your account has been temporarily locked due'
+                            + f' to {limit_attempts} unsuccessful login'
+                            + f' attempts. Please reset password by'
+                            + f' Forgot Password button.'},
+                            status=401)
                 if user is not None:
+                    if user.failed_login_attempts == limit_attempts:
+                        return JsonResponse({
+                            'status_code': 'too_many_failed_login_attempts',
+                            'message': f'Invalid Coordinates.'
+                            + f' Your account has been temporarily locked due'
+                            + f' to {limit_attempts} unsuccessful login'
+                            + f' attempts. Please reset password by'
+                            + f' Forgot Password button.'},
+                            status=401)
                     login(request, user)
+                    reset_login_failed_attempts(user)
                     return JsonResponse({
                         'status_code': 'error',
                         'message': 'User logged in.'})

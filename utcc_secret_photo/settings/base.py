@@ -26,7 +26,8 @@ env_schema = dict(
     EMAIL_HOST_PASSWORD=(str, 'your-gmail-password'),
     WEB_PROTOCAL=(str, 'http'),
     WEB_DOMAIN_NAME=(str, 'localhost:8000'),
-    IMAGE_SECRET_KEY=(str, 'yqiLYf3TF44eJGUkF7adm0K8pWs9iKg62FI6Wkmj0to=')
+    IMAGE_SECRET_KEY=(str, 'yqiLYf3TF44eJGUkF7adm0K8pWs9iKg62FI6Wkmj0to='),
+    LIMIT_LOGIN_FAILED_ATTEMPTS=(int, 5)
 )
 
 root = environ.Path(__file__) - 3
