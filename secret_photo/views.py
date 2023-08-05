@@ -180,7 +180,7 @@ class LoginAuthenticate(APIView):
             except CustomUser.DoesNotExist as e:
                 return JsonResponse({
                     'status_code': 'error',
-                    'message': 'Invalid Email or Coordinates.'},
+                    'message': 'Invalid Email.'},
                     status=401)
 
         else:
