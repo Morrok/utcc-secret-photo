@@ -116,11 +116,13 @@ def reset_password(user, validated_data, coordinates_zone):
     user.number_of_click = validated_data.get(
         'number_of_click')
     user.failed_login_attempts = 0
+    user.is_locked = False
     user.save()
 
 
 def reset_login_failed_attempts(user):
     user.failed_login_attempts = 0
+    user.is_locked = False
     user.save()
 
 

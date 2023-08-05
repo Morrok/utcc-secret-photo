@@ -140,8 +140,11 @@ class LoginAuthenticate(APIView):
                 password = CustomUser().get_click_coordinates_hash(coordinates)
                 user = custom_user.objects.get(email=data['email'])
                 if user.password != password:
-                    user.failed_login_attempts += 1
-                    if user.failed_login_attempts <= limit_attempts:
+                    failed_attempt = user.failed_login_attempts
+                    if failed_attempt < limit_attempts:
+                        user.failed_login_attempts += 1
+                        if user.failed_login_attempts == limit_attempts:
+                            user.is_locked = True
                         user.save()
                         return JsonResponse({
                             'status_code': 'failed_login',
@@ -163,7 +166,7 @@ class LoginAuthenticate(APIView):
                             + f' Forgot Password button.'},
                             status=401)
                 if user is not None:
-                    if user.failed_login_attempts == limit_attempts:
+                    if user.is_locked:
                         return JsonResponse({
                             'status_code': 'too_many_failed_login_attempts',
                             'message': f'Invalid Coordinates.'
